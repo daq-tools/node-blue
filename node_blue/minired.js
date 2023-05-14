@@ -44,7 +44,8 @@ red.shutdown = function() {
     red.log.info("HTTP server: Shutting down");
     red_server.shutdown(async function(err) {
         if (err) {
-            return red.log.info("HTTP server: Shutdown failed", err.message);
+            red.log.info(`HTTP server: Shutdown failed. Reason: ${err}`);
+            return;
         }
         red.log.info("HTTP server: Shutdown completed");
         red.log.info("Node-RED: Shutting down");
@@ -55,7 +56,7 @@ red.shutdown = function() {
     });
 }
 
-async function run(http_host, http_port) {
+async function launch_red(http_port, http_host) {
 
     red.log.info("minired: Starting");
 
@@ -94,7 +95,7 @@ async function run(http_host, http_port) {
     await connect_flow_provider();
 
     // Start Node-RED.
-    red.start().then(() => {
+    red.start().then(async () => {
         red.log.info("minired: Node-RED starting");
         red_server.listen(http_port, http_host, async () => {
             red.log.info(`minired: HTTP interface started on http://${http_host}:${http_port}`);
@@ -111,7 +112,7 @@ async function run(http_host, http_port) {
  * @returns {Promise<void>}
  */
 async function connect_flow_provider() {
-    red.log.info("minired: Connecting flow provider");
+    red.log.info("minired: Connecting Node-BLUE flow provider");
 
     // Request flows from Node-BLUE (Python).
     let blue_flows = [];
@@ -129,7 +130,6 @@ async function connect_flow_provider() {
         };
         return retVal;
     };
-
 }
 
 /**
@@ -143,10 +143,30 @@ function calculateRevision(str) {
     return crypto.createHash('md5').update(str).digest("hex");
 }
 
+/**
+ * Launch Node-BLUE.
+ *
+ * @returns {Promise<void>}
+ */
+async function launch_blue() {
 
-// FIXME: Parameterize!
-let http_host = "0.0.0.0";
-let http_port = 1880;
-await run(http_host, http_port);
+    // Default listen address.
+    let blue_listen = "localhost:1880";
 
+    // Check if Node-BLUE supplies a listen address.
+    if (typeof(blue) != "undefined" && typeof(blue.listen) == "function") {
+        blue_listen = await (await blue.listen).valueOf();
+        red.log.info(`minired: Listening on ${blue_listen}`)
+    }
+
+    // Decode listen address, and invoke Node-RED.
+    let http_host, http_port;
+    [http_host, http_port] = blue_listen.split(":");
+    await launch_red(Number.parseInt(http_port), http_host);
+}
+
+// Launch minired.
+await launch_blue();
+
+// TODO: Provide standards-based module export interface.
 return red;

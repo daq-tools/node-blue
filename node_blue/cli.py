@@ -67,8 +67,9 @@ def setup(ctx: click.Context, command: t.Tuple[str]):
     context_settings={"max_content_width": 120},
 )
 @click.option("--flow", type=str, required=False)
+@click.option("--listen", type=str, required=False, default="localhost:1880")
 @click.pass_context
 @make_sync
-async def launch(ctx: click.Context, flow: t.Union[str, Path]):
+async def launch(ctx: click.Context, flow: t.Union[str, Path], listen: str):
     logger.info(f"Launching flow: {flow}")
-    await launch_blue(flow=flow)
+    await launch_blue(listen=listen, flow=flow)
