@@ -30,17 +30,21 @@ class NodeBlue:
         self.red: ModuleType
         self.stopping = False
 
+    def setup(self):
+        """
+        Acquire 3rd-party NPM libraries upfront.
+        TODO: It does not seem to work from within the Node.js environment -- why?
+        TODO: The Python program has to be restarted -- why?
+        """
+        javascript.require("express")
+        javascript.require("http-shutdown")
+        javascript.require("node-red")
+
     def start(self):
         """
         Launch Node-RED instance.
         """
         logger.info("Launching Node-RED context")
-
-        # Acquire 3rd-party libraries upfront.
-        # TODO: It does not seem to work from within the Node.js environment -- why?
-        javascript.require("express")
-        javascript.require("http-shutdown")
-        javascript.require("node-red")
 
         program = str(importlib.resources.files("node_blue").joinpath("minired.js"))
         logger.info(f"Loading program: {program}")
