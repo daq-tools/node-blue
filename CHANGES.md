@@ -8,3 +8,4 @@
 - [cli] Add `--listen` command-line option
 - [fm] Add JSON5 flow example, converting temperature from imperial to metric
 - [fm] Add YAML flow variant of the JSON5 variant
+- [core] Rename bootstrap file `minired.js` to `blue.js`

@@ -100,7 +100,7 @@ class NodeBlue:
         """
         logger.info("Launching Node-RED context")
 
-        program = str(importlib.resources.files("node_blue").joinpath("minired.js"))
+        program = str(importlib.resources.files("node_blue").joinpath("blue.js"))
         logger.info(f"Loading program: {program}")
 
         self.context = jsrun(program)
