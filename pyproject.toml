@@ -22,7 +22,7 @@ default-tag = "0.0.0"
 
 [project]
 name = "node-blue"
-description = "Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / Now it all makes sense"
+description = "Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / Efficient test harnesses for Node-RED /\n  Headless Node-RED / Improved development cycle times / Now it all makes sense"
 readme = "README.md"
 keywords = [
   "automation",
