@@ -98,6 +98,7 @@ dependencies = [
   "funcy<3",
   "javascript==1!1.0.1",
   "json5<1",
+  "pyyaml<7",
   "requests<3",
   "tabulate<1",
 ]
