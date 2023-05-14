@@ -35,6 +35,7 @@ class NodeBlue:
         Acquire 3rd-party NPM libraries upfront.
         TODO: It does not seem to work from within the Node.js environment -- why?
         TODO: The Python program has to be restarted -- why?
+        TODO: Pin versions of packages.
         """
         javascript.require("express")
         javascript.require("http-shutdown")
