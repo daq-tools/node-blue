@@ -1,5 +1,5 @@
-# (c) 2023, The Panodata Developers
-
+# Copyright (c) 2023, The Panodata developers and contributors.
+# Distributed under the terms of the Apache-2.0 license, see LICENSE.
 import pytest
 import requests
 
