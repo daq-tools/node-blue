@@ -30,15 +30,13 @@
 // Import prerequisites.
 const express = require("express");
 const http = require("http");
-//const httpClose = require("http-close");
+const http_shutdown = require("http-shutdown");
 const red = require("node-red");
 
 // Express and Node-RED application / server instances.
 const express_app = express();
 const base_server = http.createServer(express_app);
-
-//httpClose({ timeout: 10 }, red_server);
-const red_server = require("http-shutdown")(base_server);
+const red_server = http_shutdown(base_server);
 
 red.shutdown = function() {
     red.log.info("HTTP server: Shutting down");

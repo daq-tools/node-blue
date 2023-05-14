@@ -39,7 +39,6 @@ class NodeBlue:
         # Acquire 3rd-party libraries upfront.
         # TODO: It does not seem to work from within the Node.js environment -- why?
         javascript.require("express")
-        javascript.require("http-close")
         javascript.require("http-shutdown")
         javascript.require("node-red")
 
