@@ -2,14 +2,18 @@
 # Distributed under the terms of the Apache-2.0 license, see LICENSE.
 import asyncio
 import functools
+import json
 import logging
 import sys
 import textwrap
 import threading
 import typing as t
+from pathlib import Path
 
 import click
+import requests
 
+logger = logging.getLogger(__name__)
 
 def setup_logging(level=logging.INFO):
     log_format = "%(asctime)-15s [%(name)-20s] %(levelname)-7s: %(message)s"
@@ -66,3 +70,23 @@ def make_sync(func):
         return asyncio.run(func(*args, **kwargs))
 
     return wrapper
+
+
+def acquire_text_resource(resource: t.Optional[t.Union[str, Path]] = None) -> t.Any:
+    if resource is None:
+        raise FileNotFoundError("No file, directory, or URL given")
+
+    resource_str = str(resource)
+    resource_path = Path(resource)
+
+    logger.info(f"Loading resource from {resource}")
+    if resource_str.startswith("http://") or resource_str.startswith("https://"):
+        return requests.get(resource_str).json()
+    else:
+        if not resource_path.exists():
+            raise FileNotFoundError(f"File or directory not found: {resource_path}")
+        if resource_path.is_file():
+            with open(resource) as f:
+                return json.load(f)
+        else:
+            raise NotImplementedError("Processing a whole directory not implemented yet")

@@ -13,14 +13,16 @@ execution, etc.
 ## Synopsis
 
 ### Command-line use.
-Install [Node-BLUE] and [HTTPie].
+Install [Node-BLUE] and [HTTPie], and their prerequisites.
 ```shell
 pip install httpie https://github.com/daq-tools/node-blue
+node-blue setup
 ```
 
 Start Node-BLUE with a Node-RED flow defining an HTTP/HTML endpoint/responder.
 ```shell
-node-blue --flow=https://github.com/daq-tools/node-blue/blob/main/examples/flows/http-html-templating.json
+node-blue launch --flow=examples/flows/http-html-templating.json
+node-blue launch --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/http-html-templating.json
 ```
 
 Run an example HTTP request.

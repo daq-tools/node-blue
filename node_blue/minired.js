@@ -28,6 +28,7 @@
 **/
 
 // Import prerequisites.
+const crypto = require("crypto");
 const express = require("express");
 const http = require("http");
 const http_shutdown = require("http-shutdown");
@@ -37,6 +38,7 @@ const red = require("node-red");
 const express_app = express();
 const base_server = http.createServer(express_app);
 const red_server = http_shutdown(base_server);
+
 
 red.shutdown = function() {
     red.log.info("HTTP server: Shutting down");
@@ -65,7 +67,8 @@ async function run(http_host, http_port) {
         httpAdminRoot: "/admin",
 
         // Flow file to load.
-        flowFile: "examples/flows/http-html-templating.json",
+        // It is `null`, because flows will be provided by Python.
+        flowFile: null,
 
         // Filesystem location for instance metadata.
         userDir: "./var",
@@ -87,16 +90,61 @@ async function run(http_host, http_port) {
     express_app.use(red.settings.httpAdminRoot, red.httpAdmin);
     express_app.use(red.settings.httpNodeRoot, red.httpNode);
 
+    // Connect to Node-BLUE's flow provider.
+    await connect_flow_provider();
+
     // Start Node-RED.
     red.start().then(() => {
         red.log.info("minired: Node-RED starting");
-        red_server.listen(http_port, http_host, () => {
+        red_server.listen(http_port, http_host, async () => {
             red.log.info(`minired: HTTP interface started on http://${http_host}:${http_port}`);
+            // let active_flows = await red.runtime.flows.getFlows({});
+            // console.log("Active flows:", active_flows);
         });
     });
 
 }
 
+/**
+ * Connect Node-RED to Node-BLUE's flow provider.
+ *
+ * @returns {Promise<void>}
+ */
+async function connect_flow_provider() {
+    red.log.info("minired: Connecting flow provider");
+
+    // Request flows from Node-BLUE (Python).
+    let blue_flows = [];
+    if (typeof(blue) != "undefined" && typeof(blue.get_flows) == "function") {
+        blue_flows = await (await blue.get_flows()).valueOf();
+    }
+
+    // Provide flows to Node-RED.
+    // https://gitlab.com/monogoto.io/node-red-contrib-flow-manager/-/blob/0.7.4/flow-manager.js#L391-414
+    red.runtime.storage.getFlows = async function () {
+        const retVal = {
+            flows: blue_flows,
+            rev: calculateRevision(JSON.stringify(blue_flows)),
+            credentials: {},
+        };
+        return retVal;
+    };
+
+}
+
+/**
+ * Compute digest to use as flow revision number.
+ *
+ * @param str
+ * @returns {string}
+ */
+// https://gitlab.com/monogoto.io/node-red-contrib-flow-manager/-/blob/0.7.4/flow-manager.js#L375-377
+function calculateRevision(str) {
+    return crypto.createHash('md5').update(str).digest("hex");
+}
+
+
+// FIXME: Parameterize!
 let http_host = "0.0.0.0";
 let http_port = 1880;
 await run(http_host, http_port);

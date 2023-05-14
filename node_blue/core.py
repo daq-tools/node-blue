@@ -14,9 +14,38 @@ import typing as t
 import tabulate
 
 from node_blue.hal import jsrun, Context
-from node_blue.util import run_later, wait
+from node_blue.util import run_later, wait, acquire_text_resource
 
 logger = logging.getLogger(__name__)
+
+
+class FlowManager:
+    """
+    Node-BLUE flow manager and provider for Node-RED.
+    """
+
+    def __init__(self):
+        self.flows: t.List = []
+
+    def get_flows(self) -> t.List:
+        """
+        Get current state of flows. This method is used from Node-RED by invoking `blue.get_flows()`.
+        """
+        return self.flows
+
+    def set_flows(self, flows: t.List):
+        """
+        Directly supply flows to Node-RED.
+        """
+        self.flows = flows
+
+    def load_flow(self, flow: t.Optional[t.Union[str, Path]] = None):
+        """
+        Load Node-RED flow file from any resource.
+
+        TODO: Apply sanity checks on return value of `acquire_text_resource`.
+        """
+        self.flows = acquire_text_resource(flow)
 
 
 class NodeBlue:
@@ -24,11 +53,12 @@ class NodeBlue:
     Manage a Node-RED instance.
     """
 
-    def __init__(self, flow: t.Optional[t.Union[str, Path]] = None):
-        self.flow = flow
+    def __init__(self, fm: FlowManager = None):
+        self.fm: FlowManager = fm or FlowManager()
         self.context: Context
         self.red: ModuleType
         self.stopping = False
+        self.configure()
 
     def setup(self):
         """
@@ -40,6 +70,28 @@ class NodeBlue:
         javascript.require("express")
         javascript.require("http-shutdown")
         javascript.require("node-red")
+
+    def configure(self):
+        """
+        Connect Node-BLUE with Node-RED, by adding a reference to ourselves into the
+        global JavaScript scope.
+        """
+        logger.info("Connecting Node-BLUE with Node-RED")
+        javascript.globalThis.blue = self
+
+    def get_flows(self):
+        """
+        Node-BLUE flow provider for Node-RED.
+        """
+        if self.fm is None:
+            logger.error("Node-BLUE flow provider not enabled")
+        else:
+            flows = self.fm.get_flows()
+            if flows is None:
+                logger.warning("No flows provided by Node-BLUE")
+            else:
+                return flows
+        return []
 
     def start(self):
         """
@@ -164,25 +216,34 @@ class NodeBlue:
                 self.stopping = False
 
 
-async def launch_blue():
+async def launch_blue(flow):
     """
     Launch a Node-BLUE instance.
     """
+
+    # Configure Node-BLUE flow manager.
+    fm = FlowManager()
+    fm.load_flow(flow)
+
     # Start Node-RED, and wait until termination.
-    blue = NodeBlue()
+    blue = NodeBlue(fm=fm)
     await blue.run()
 
 
-async def launch_blue_manual():
+async def launch_blue_manual(flow):
     """
     Launch a Node-BLUE instance.
     """
-    blue = NodeBlue()
+
+    # Configure Node-BLUE flow manager.
+    fm = FlowManager()
+    fm.load_flow(flow)
 
     # Start Node-RED.
+    blue = NodeBlue()
     blue.start().wait_started()
 
-    # Start Node-RED, and terminate shortly after.
+    # Optionally, terminate shortly after.
     # blue.start().stop_after(3)
     # blue.stop_after(0)
     # blue.stop()

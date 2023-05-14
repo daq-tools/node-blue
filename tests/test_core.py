@@ -3,14 +3,13 @@
 import pytest
 import requests
 
-from node_blue.core import NodeBlue
+from node_blue.core import NodeBlue, FlowManager
 
 
 @pytest.mark.asyncio
 async def test_start_stop():
-    blue = NodeBlue()
-
     # Start Node-RED, and terminate immediately.
+    blue = NodeBlue()
     blue.start().wait_started().stop()
     # blue.start().stop_after(0)
 
@@ -20,9 +19,12 @@ async def test_start_stop():
 
 @pytest.mark.asyncio
 async def test_http_html_templating():
-    blue = NodeBlue()
+    # Configure Node-BLUE flow manager.
+    fm = FlowManager()
+    fm.load_flow("examples/flows/http-html-templating.json")
 
     # Start Node-RED, and terminate immediately.
+    blue = NodeBlue(fm=fm)
     blue.start().wait_started()
 
     # Submit HTTP POST request.

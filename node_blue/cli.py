@@ -2,6 +2,7 @@
 # Distributed under the terms of the Apache-2.0 license, see LICENSE.
 import logging
 import typing as t
+from pathlib import Path
 
 import click
 
@@ -19,7 +20,7 @@ def help_launch():
     ========
 
     node-blue launch \\
-        --flow=https://github.com/daq-tools/node-blue/blob/main/examples/flows/http-html-templating.json
+        --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/http-html-templating.json
 
     """  # noqa: E501
 
@@ -68,7 +69,6 @@ def setup(ctx: click.Context, command: t.Tuple[str]):
 @click.option("--flow", type=str, required=False)
 @click.pass_context
 @make_sync
-async def launch(ctx: click.Context, flow: str):
-    logger.info("Starting")
-    # await run_single(source, sink)
-    await launch_blue()
+async def launch(ctx: click.Context, flow: t.Union[str, Path]):
+    logger.info(f"Launching flow: {flow}")
+    await launch_blue(flow=flow)
