@@ -13,7 +13,7 @@ import typing as t
 
 import tabulate
 
-from node_blue.hal import jsrun, Context
+from node_blue.hal import jsrun, NodeBlueContext
 from node_blue.util import run_later, wait, acquire_text_resource
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ class NodeBlue:
 
     def __init__(self, fm: FlowManager = None):
         self.fm: FlowManager = fm or FlowManager()
-        self.context: Context
+        self.context: NodeBlueContext
         self.red: ModuleType
         self.stopping = False
         self.configure()

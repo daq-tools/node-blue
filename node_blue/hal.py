@@ -10,14 +10,14 @@ import javascript
 
 
 @dataclasses.dataclass
-class Context:
+class NodeBlueContext:
     program: t.Union[str, Path]
     retval: t.Any
     module: t.Any
     task: t.Optional[asyncio.Task]
 
 
-def jsrun(program: t.Union[str, Path]) -> Context:
+def jsrun(program: t.Union[str, Path]) -> NodeBlueContext:
     bootloader = open(program).read()
     module: t.Dict = {}
     retval = javascript.eval_js(bootloader)
@@ -26,7 +26,7 @@ def jsrun(program: t.Union[str, Path]) -> Context:
 
     current_task = asyncio.current_task()
 
-    ctx = Context(
+    ctx = NodeBlueContext(
         program=program,
         retval=retval,
         module=module,
