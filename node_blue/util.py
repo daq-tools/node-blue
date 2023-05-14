@@ -13,6 +13,7 @@ import click
 import colorlog
 import json5
 import requests
+import yaml
 from colorlog.escape_codes import escape_codes
 
 logger = logging.getLogger(__name__)
@@ -100,6 +101,8 @@ def acquire_text_resource(resource: t.Optional[t.Union[str, Path]] = None) -> t.
                     return json.load(f)
                 elif suffix == ".json5":
                     return json5.load(f)
+                elif suffix in [".yaml", ".yml"]:
+                    return yaml.safe_load(f)
                 else:
                     raise NotImplementedError(f"Reading files with format {suffix} not supported")
         else:
