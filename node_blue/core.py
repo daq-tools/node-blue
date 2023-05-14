@@ -53,8 +53,9 @@ class NodeBlue:
     Manage a Node-RED instance.
     """
 
-    def __init__(self, fm: FlowManager = None):
+    def __init__(self, fm: FlowManager = None, listen: str = "127.0.0.1:1880"):
         self.fm: FlowManager = fm or FlowManager()
+        self.listen = listen
         self.context: NodeBlueContext
         self.red: ModuleType
         self.stopping = False
@@ -173,6 +174,7 @@ class NodeBlue:
         while not self.is_started():
             logger.info("Waiting for Node-RED to boot")
             wait(0.05)
+        logger.info("Node-RED started successfully")
         return self
 
     def wait_stopped(self):
@@ -216,7 +218,7 @@ class NodeBlue:
                 self.stopping = False
 
 
-async def launch_blue(flow):
+async def launch_blue(listen: str, flow: t.Union[str, Path]):
     """
     Launch a Node-BLUE instance.
     """
@@ -230,7 +232,7 @@ async def launch_blue(flow):
     await blue.run()
 
 
-async def launch_blue_manual(flow):
+async def launch_blue_manual(listen: str, flow: t.Union[str, Path]):
     """
     Launch a Node-BLUE instance.
     """
