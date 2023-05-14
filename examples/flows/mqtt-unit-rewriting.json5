@@ -4,7 +4,7 @@
  * JSON5 is an extension to the popular JSON file format that aims to be
  * easier to write and maintain by hand (e.g. for config files).
  *
- * The major features used here, are inline comments, and multiline strings.
+ * The major features used here, are inline comments, and multi-line strings.
  *
  * https://json5.org/
  *
