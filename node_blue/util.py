@@ -11,6 +11,7 @@ from pathlib import Path
 
 import click
 import colorlog
+import json5
 import requests
 from colorlog.escape_codes import escape_codes
 
@@ -93,7 +94,13 @@ def acquire_text_resource(resource: t.Optional[t.Union[str, Path]] = None) -> t.
         if not resource_path.exists():
             raise FileNotFoundError(f"File or directory not found: {resource_path}")
         if resource_path.is_file():
+            suffix = resource_path.suffix
             with open(resource) as f:
-                return json.load(f)
+                if suffix == ".json":
+                    return json.load(f)
+                elif suffix == ".json5":
+                    return json5.load(f)
+                else:
+                    raise NotImplementedError(f"Reading files with format {suffix} not supported")
         else:
             raise NotImplementedError("Processing a whole directory not implemented yet")
