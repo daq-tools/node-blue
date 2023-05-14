@@ -48,7 +48,7 @@ class NodeBlue:
         self.context = jsrun(program)
         self.red = self.context.retval
 
-        wait(1.00)
+        wait(0.75)
 
         # print("ctx:", self.context)
         return self
