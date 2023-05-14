@@ -64,6 +64,7 @@ jobs:
 
     - name: Run tests
       run: |
+        node-blue setup
         poe test
 
     - name: Upload coverage to Codecov
