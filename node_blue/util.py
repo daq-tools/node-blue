@@ -4,20 +4,27 @@ import asyncio
 import functools
 import json
 import logging
-import sys
 import textwrap
 import threading
 import typing as t
 from pathlib import Path
 
 import click
+import colorlog
 import requests
+from colorlog.escape_codes import escape_codes
 
 logger = logging.getLogger(__name__)
 
+
 def setup_logging(level=logging.INFO):
-    log_format = "%(asctime)-15s [%(name)-20s] %(levelname)-7s: %(message)s"
-    logging.basicConfig(format=log_format, stream=sys.stderr, level=level)
+    reset = escape_codes["reset"]
+    log_format = f"%(asctime)-15s [%(name)-28s] %(log_color)s%(levelname)-8s:{reset} %(message)s"
+
+    handler = colorlog.StreamHandler()
+    handler.setFormatter(colorlog.ColoredFormatter(log_format))
+
+    logging.basicConfig(format=log_format, level=level, handlers=[handler])
 
 
 async def run_later(fun: t.Callable, seconds: float):
