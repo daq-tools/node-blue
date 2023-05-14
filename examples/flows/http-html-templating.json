@@ -6,7 +6,8 @@
     "method": "post",
     "wires": [
       [
-        "transformation.4459f"
+        "transformation.4459f",
+        "debugging.b01683"
       ]
     ]
   },
@@ -28,5 +29,20 @@
     "id": "sink.93146c",
     "type": "http response",
     "wires": []
+  },
+  {
+    "id": "debugging.b01683",
+    "type": "function",
+    "name": "Debugging",
+    "info": "A basic debugging node to demonstrate the lifecycle of a flow.",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "console.log(\"http-html-templating: start\");\n",
+    "func": "console.log(\"http-html-templating: message\");\nconsole.log(msg.req.body);\nreturn msg;\n",
+    "finalize": "console.log(\"http-html-templating: stop\");\n",
+    "libs": [],
+    "wires": [
+      []
+    ]
   }
 ]
