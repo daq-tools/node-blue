@@ -1,0 +1,216 @@
+# ==================
+# Build system setup
+# ==================
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=42", # At least v42 of setuptools required!
+  "versioningit",
+]
+
+[tool.versioningit]
+
+[tool.versioningit.vcs]
+method = "git"
+default-tag = "0.0.0"
+
+
+# ================
+# Project metadata
+# ================
+
+[project]
+name = "node-blue"
+description = "Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / Now it all makes sense"
+readme = "README.md"
+keywords = [
+  "automation",
+  "flow-programming",
+  "javascript",
+  "json",
+  "JSPyBridge",
+  "node-blue",
+  "node-red",
+  "yaml",
+]
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Andreas Motl", email = "andreas.motl@panodata.org" },
+]
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Customer Service",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Manufacturing",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: System Administrators",
+  "Intended Audience :: Telecommunications Industry",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Adaptive Technologies",
+  "Topic :: Communications",
+  "Topic :: Database",
+  "Topic :: Documentation",
+  "Topic :: Education",
+  "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Office/Business",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Embedded Systems",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Object Brokering",
+  "Topic :: Software Development :: Pre-processors",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Version Control",
+  "Topic :: System :: Archiving",
+  "Topic :: System :: Benchmark",
+  "Topic :: System :: Clustering",
+  "Topic :: System :: Distributed Computing",
+  "Topic :: System :: Hardware",
+  "Topic :: System :: Logging",
+  "Topic :: System :: Monitoring",
+  "Topic :: System :: Networking",
+  "Topic :: System :: Systems Administration",
+  "Topic :: Text Processing",
+  "Topic :: Utilities",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "click<9",
+  "colorama<1",
+  "colorlog<7",
+  "funcy<3",
+  "javascript==1!1.0.1",
+  "requests<3",
+  "tabulate<1",
+]
+[project.optional-dependencies]
+develop = [
+  "black<24",
+  "mypy==1.3",
+  "poethepoet<0.20",
+  "pyproject-fmt<0.10",
+  "ruff==0.0.261",
+  "validate-pyproject<0.13",
+]
+release = [
+  "build<1",
+  'minibump<1; python_version >= "3.10"',
+  "twine<5",
+]
+test = [
+  "coverage<8",
+  "pytest<8",
+  "pytest-asyncio",
+  "pytest-mqtt",
+]
+[project.urls]
+changelog = "https://github.com/daq-tools/node-blue/blob/main/CHANGES.md"
+documentation = "https://github.com/daq-tools/node-blue"
+homepage = "https://github.com/daq-tools/node-blue"
+repository = "https://github.com/daq-tools/node-blue"
+[project.scripts]
+node-blue = "node_blue.cli:cli"
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+
+# =========================
+# Linter and code formatter
+# =========================
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
+ignore = [
+  "E722"  # Do not use bare `except`
+]
+extend-exclude = [
+  # Always.
+  ".venv*",
+  "example_*",
+  # Temporary
+  "workbench.py",
+]
+
+[tool.mypy]
+packages = ["node_blue"]
+exclude = [
+]
+check_untyped_defs = true
+ignore_missing_imports = true
+implicit_optional = true
+install_types = true
+non_interactive = true
+
+
+# ==================
+# Test configuration
+# ==================
+
+[tool.pytest.ini_options]
+minversion = "2.0"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --capture=no"
+log_cli = true  # Enable to receive way more log details on stdout.
+log_cli_level = "DEBUG"
+log_level = "DEBUG"
+testpaths = ["examples", "node_blue", "tests"]
+xfail_strict = true
+
+[tool.coverage.run]
+branch = false
+source = ["node_blue"]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
+
+# ===================
+# Tasks configuration
+# ===================
+
+[tool.poe.tasks]
+format = [
+  { cmd = "black ." },
+  # Configure Ruff not to auto-fix (remove!):
+  # unused imports (F401), unused variables (F841), `print` statements (T201), and commented-out code (ERA001).
+  { cmd = "ruff --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
+  { cmd = "pyproject-fmt pyproject.toml" },
+]
+lint = [
+  { cmd = "ruff ." },
+  { cmd = "black --check ." },
+  { cmd = "validate-pyproject pyproject.toml" },
+  { cmd = "mypy" },
+]
+test = [
+  { cmd = "pytest" },
+]
+coverage = [
+  { cmd = "coverage run pytest" },
+  { cmd = "coverage xml" },
+  { cmd = "coverage report" },
+]
+build = { cmd = "python -m build" }
+check = [ "lint", "test" ]

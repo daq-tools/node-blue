@@ -1,0 +1,4 @@
+include CHANGES.md LICENSE README.md
+recursive-include node_blue *.js
+recursive-include docs *.md
+prune tests
