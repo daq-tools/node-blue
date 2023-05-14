@@ -11,7 +11,7 @@ async def test_start_stop():
     blue = NodeBlue()
 
     # Start Node-RED, and terminate immediately.
-    blue.start().stop()
+    blue.start().wait_started().stop()
     # blue.start().stop_after(0)
 
     # Wait until termination.
@@ -23,7 +23,7 @@ async def test_http_html_templating():
     blue = NodeBlue()
 
     # Start Node-RED, and terminate immediately.
-    blue.start()
+    blue.start().wait_started()
 
     # Submit HTTP POST request.
     # http http://localhost:1880/hello-form name=Hotzenplotz
