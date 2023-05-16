@@ -79,6 +79,7 @@ async function launch_red(http_port, http_host) {
 
     red.log.info("minired: Starting");
 
+    // Blueprint: .venv/lib/python3.11/site-packages/javascript/js/node_modules/node-red/settings.js
     let options = {
         // HTTP API is mountpoint.
         httpNodeRoot: "/",
@@ -94,8 +95,19 @@ async function launch_red(http_port, http_host) {
         userDir: "./var",
 
         // Configure editor theme and categories.
-        //editorTheme: editorTheme,
+        editorTheme: {
+            // https://github.com/node-red-contrib-themes/theme-collection
+            theme: "dracula",
+
+            // Disable the "Welcome to Node-RED" tour displayed on first visit to Node-RED's Admin UI.
+            tours: false,
+        },
         //paletteCategories: "",
+
+        // Your flow credentials file is encrypted using a system-generated key.
+        // You should set your own key using the 'credentialSecret' option in
+        // your settings file.
+        credentialSecret: "shandafonphiteccuwykteid",
 
         // Do those even exist?
         verbose: true,
@@ -120,7 +132,7 @@ async function launch_red(http_port, http_host) {
     red.start().then(() => {
         red.log.info("minired: Node-RED starting");
         red_server.listen(http_port, http_host, () => {
-            red.log.info(`minired: HTTP interface started on http://${http_host}:${http_port}`);
+            red.log.info(`minired: HTTP admin interface started on http://${http_host}:${http_port}${red.settings.httpAdminRoot}`);
             // let active_flows = await red.runtime.flows.getFlows({});
             // console.log("Active flows:", active_flows);
         });

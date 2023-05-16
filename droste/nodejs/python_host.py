@@ -5,6 +5,8 @@ import logging
 import typing as t
 import textwrap
 
+from node_blue.util import setup_logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,6 +19,9 @@ class PythonCodeHost:
         self.verbose = verbose
         self.pretty = pretty
         self.registered_symbols = {}
+
+        # TODO: Always?
+        setup_logging()
 
     def register_symbol(self, name: str):
         """

@@ -65,16 +65,23 @@ class NodeBlue:
     def setup(self):
         """
         Acquire 3rd-party NPM libraries upfront.
+
         TODO: It does not seem to work from within the Node.js environment -- why?
         TODO: The Python program has to be restarted -- why?
         TODO: Pin versions of packages.
         TODO: Refactor into `package.json`?
+        TODO: Why does colored output using `chalk` not work?
         """
-        javascript.require("express")
-        javascript.require("http-shutdown")
-        javascript.require("node-red")
-        javascript.require("pythonia")
-        javascript.require("@node-loader/import-maps")
+
+        # javascript.require("chalk")
+        javascript.require("http-shutdown", "^1.2")
+        javascript.require("node-red", "^3.0.2")
+        javascript.require("pythonia", "^1.0.1")
+        javascript.require("@node-loader/import-maps", "^1.1.0")
+
+        # When this is installed, subtle exceptions will happen, and
+        # the test harness stops working, so something is fishy.
+        # javascript.require("@node-red-contrib-themes/theme-collection")
 
     def configure(self):
         """
@@ -192,6 +199,7 @@ class NodeBlue:
         while not self.is_started():
             logger.info("Waiting for Node-RED to boot")
             wait(0.15)
+        wait(0.01)
         logger.info("Node-RED started successfully")
         return self
 
@@ -202,6 +210,7 @@ class NodeBlue:
         while self.is_started():
             logger.info("Waiting for Node-RED to shut down")
             wait(0.15)
+        wait(0.01)
         return self
 
     def stop_after(self, seconds: float):
@@ -219,7 +228,7 @@ class NodeBlue:
         self.start()
         logger.info(f"Node-RED version: {self.version()}")
         # logger.info(f"Node-RED settings: {blue.settings}")
-        logger.info(f"Node-RED nodes:\n{self.nodes_summary}")
+        # logger.info(f"Node-RED nodes:\n{self.nodes_summary}")
         self.wait_started()
         await self.forever()
 

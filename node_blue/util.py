@@ -38,6 +38,10 @@ def wait(seconds: float):
     threading.Event().wait(seconds)
 
 
+async def asleep(seconds: float):
+    await asyncio.sleep(seconds)
+
+
 def boot_click(ctx: click.Context, verbose: bool = False, debug: bool = False):
     """
     Bootstrap the CLI application.
