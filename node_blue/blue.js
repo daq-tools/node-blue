@@ -1,7 +1,9 @@
 /**
- * Copyright JS Foundation and other contributors, http://js.foundation
+ * Node-BLUE main application. A minimal Node-RED JavaScript wrapper.
  *
  * Copyright (c) 2023, The Panodata developers and contributors.
+ * Copyright JS Foundation and other contributors, http://js.foundation
+ *
  * Distributed under the terms of the Apache-2.0 license, see LICENSE.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +29,13 @@
  *
 **/
 
+
+let __CONTAINER_PATHS__ = global["__CONTAINER_PATHS__"]
+module.paths = module.paths.concat(__CONTAINER_PATHS__)
+
+const python = require("pythonia");
+const py = python.py;
+
 // Import prerequisites.
 const crypto = require("crypto");
 const express = require("express");
@@ -40,6 +49,9 @@ const base_server = http.createServer(express_app);
 const red_server = http_shutdown(base_server);
 
 
+/**
+ * Add a central Node-RED shutdown function.
+ */
 red.shutdown = function() {
     red.log.info("HTTP server: Shutting down");
     red_server.shutdown(async function(err) {
@@ -56,6 +68,13 @@ red.shutdown = function() {
     });
 }
 
+/**
+ * Launch Node-RED.
+ *
+ * @param http_port
+ * @param http_host
+ * @returns {Promise<void>}
+ */
 async function launch_red(http_port, http_host) {
 
     red.log.info("minired: Starting");
@@ -86,18 +105,18 @@ async function launch_red(http_port, http_host) {
     // Configure Node-RED context.
     red.init(red_server, options);
 
+    // Connect to Node-BLUE's flow provider.
+    await connect_flow_provider();
+
     // Node-RED default routes.
     express_app.use("/", express.static("web"));
     express_app.use(red.settings.httpAdminRoot, red.httpAdmin);
     express_app.use(red.settings.httpNodeRoot, red.httpNode);
 
-    // Connect to Node-BLUE's flow provider.
-    await connect_flow_provider();
-
     // Start Node-RED.
-    red.start().then(async () => {
+    red.start().then(() => {
         red.log.info("minired: Node-RED starting");
-        red_server.listen(http_port, http_host, async () => {
+        red_server.listen(http_port, http_host, () => {
             red.log.info(`minired: HTTP interface started on http://${http_host}:${http_port}`);
             // let active_flows = await red.runtime.flows.getFlows({});
             // console.log("Active flows:", active_flows);
@@ -105,6 +124,7 @@ async function launch_red(http_port, http_host) {
     });
 
 }
+
 
 /**
  * Connect Node-RED to Node-BLUE's flow provider.
@@ -165,8 +185,9 @@ async function launch_blue() {
     await launch_red(Number.parseInt(http_port), http_host);
 }
 
-// Launch minired.
-await launch_blue();
 
-// TODO: Provide standards-based module export interface.
-return red;
+// Export symbols.
+module.exports = {
+    red: red,
+    launch_blue: launch_blue,
+}
