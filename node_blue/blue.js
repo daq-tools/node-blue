@@ -166,7 +166,7 @@ async function register_types() {
     //       Will it be better after packaging `droste` as a real NPM?
     //       Otherwise, maybe refactor `blue.js` to ES6 module `blue.mjs`?
     // TODO: Improve after migration to ES6.
-    const PythonFunctionNode = (await import("../droste/nodejs/nodered_python_function.mjs")).PythonFunctionNode
+    const PythonFunctionNode = (await import("./udf_python.mjs")).PythonFunctionNode
     red.nodes.registerType("node-blue", "python-function", PythonFunctionNode);
 
 }

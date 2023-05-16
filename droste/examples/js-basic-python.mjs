@@ -48,12 +48,16 @@ class Application {
      * @returns {Promise<*>}
      */
     static async workload() {
-        let data = {msg: {payload: {temperature: 42.42}, topic: "foo/imperial"}}
+        let kwargs = {
+            msg: {payload: {temperature: 42.42}, topic: "foo/imperial"},
+            send: function() {},
+            done: function() {},
+        }
 
         const box = await PythonCodeBox.init({verbose: true, pretty: true})
         await box.register("testdrive", pycode)
 
-        return await box.invoke("testdrive", data)
+        return await box.invoke("testdrive", kwargs)
     }
 
     /**
@@ -77,7 +81,7 @@ class Util {
 
     static async info(message) {}
 
-    // Boilerplate: Confiure Python logger.
+    // Boilerplate: Configure Python logger.
     static async setup_logging() {
         const node_blue_util = await python("node_blue.util")
         const setup_logging = await node_blue_util.setup_logging

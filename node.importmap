@@ -1,7 +1,6 @@
 {
   "imports": {
     "blue": "./node_blue/blue.js",
-    "droste.nodejs.python_api": "./droste/nodejs/python_api.mjs",
-    "droste.nodejs.nodered_python_function": "./droste/nodejs/nodered_python_function.mjs"
+    "droste.nodejs.python_api": "./droste/nodejs/python_api.mjs"
   }
 }
