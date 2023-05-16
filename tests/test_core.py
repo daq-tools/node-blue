@@ -12,12 +12,13 @@ from node_blue.core import NodeBlue, FlowManager
 from node_blue.util import wait
 
 
+@pytest.mark.repeat(2)
 @pytest.mark.asyncio
 async def test_start_stop():
     # Start Node-RED, and terminate immediately.
     blue = NodeBlue()
     blue.start().wait_started().stop()
-    # blue.start().stop_after(0)
+    # blue.start().wait_started().stop_after(0)
 
     # Wait until termination.
     await blue.forever()
@@ -32,6 +33,7 @@ async def test_http_html_templating():
     # Start Node-RED, and terminate immediately.
     blue = NodeBlue(fm=fm)
     blue.start().wait_started()
+    wait(0.05)
 
     # Submit HTTP POST request, and verify response body.
     # http http://localhost:1880/hello-form name=Hotzenplotz

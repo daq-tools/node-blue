@@ -13,7 +13,7 @@ import typing as t
 
 import tabulate
 
-from node_blue.hal import jsrun, NodeBlueContext
+from node_blue.hal import NodeBlueContext, jsrun
 from node_blue.util import run_later, wait, acquire_text_resource
 
 logger = logging.getLogger(__name__)
@@ -67,10 +67,13 @@ class NodeBlue:
         TODO: It does not seem to work from within the Node.js environment -- why?
         TODO: The Python program has to be restarted -- why?
         TODO: Pin versions of packages.
+        TODO: Refactor into `package.json`?
         """
         javascript.require("express")
         javascript.require("http-shutdown")
         javascript.require("node-red")
+        javascript.require("pythonia")
+        javascript.require("@node-loader/import-maps")
 
     def configure(self):
         """
@@ -100,27 +103,41 @@ class NodeBlue:
         """
         logger.info("Launching Node-RED context")
 
-        program = str(importlib.resources.files("node_blue").joinpath("blue.js"))
-        logger.info(f"Loading program: {program}")
+        # Acquire paths to JavaScript code.
+        node_blue_resources = importlib.resources.files("node_blue")
+        bootloader = str(node_blue_resources.joinpath("boot.js"))
+        program = str(node_blue_resources.joinpath("blue.js"))
 
-        self.context = jsrun(program)
-        self.red = self.context.retval
+        # Inquire main module paths.
+        module_paths = javascript.eval_js("return module.paths")
 
-        wait(0.75)
+        # Populate global settings to send parameters to the bootloader subsystem.
+        javascript.globalThis["__PROGRAM__"] = program
+        javascript.globalThis["__CONTAINER_PATHS__"] = module_paths
 
-        # print("ctx:", self.context)
+        # Invoke bootloader.
+        self.context = jsrun(bootloader)
+
+        # TODO: Improve. Use events.
+        wait(0.05)
+
+        # FIXME: Do not use global variables.
+        self.red = javascript.globalThis["red"]
+
         return self
 
     def stop(self):
         """
         Stop Node-RED instance.
 
-        TODO: Use `red.stop()`.
+        Note: Node-RED's inline documentation at `red.stop()` says:
 
-        Note:
-        Node-RED's inline documentation at `red.stop()` says:
         > Once called, Node-RED should not be restarted until the Node.JS process is restarted.
+
         Indeed, when called, then on another call to `red.init()` Node-RED will croak `Cannot init without a stop`.
+
+        However, by using the `http-shutdown` package, it seems to work well to set up an teardown
+        Node-RED multiple times without needing to restart the interpreter, Python and Node.JS.
         """
 
         logger.info("Node-RED: Sending shutdown signal")
@@ -132,7 +149,7 @@ class NodeBlue:
         if self.context.task is not None:
             self.stopping = True
             self.context.task.cancel()
-            wait(0.15)
+            wait(0.05)
         return self
 
     def is_started(self) -> bool:
@@ -173,7 +190,7 @@ class NodeBlue:
         """
         while not self.is_started():
             logger.info("Waiting for Node-RED to boot")
-            wait(0.05)
+            wait(0.15)
         logger.info("Node-RED started successfully")
         return self
 
@@ -183,7 +200,7 @@ class NodeBlue:
         """
         while self.is_started():
             logger.info("Waiting for Node-RED to shut down")
-            wait(0.05)
+            wait(0.15)
         return self
 
     def stop_after(self, seconds: float):
@@ -208,8 +225,10 @@ class NodeBlue:
     async def forever(self):
         """
         Wait until termination.
+
+        TODO: Improve!
         """
-        if self.context.task is not None:
+        if self.context and self.context.task is not None:
             try:
                 await asyncio.wait([self.context.task])
             except asyncio.CancelledError:
@@ -225,6 +244,8 @@ async def launch_blue(listen: str, flow: t.Union[str, Path]):
 
     # Configure Node-BLUE flow manager.
     fm = FlowManager()
+
+    # TODO: Load multiple flows.
     fm.load_flow(flow)
 
     # Start Node-RED, and wait until termination.

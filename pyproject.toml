@@ -122,6 +122,7 @@ test = [
   "pytest<8",
   "pytest-asyncio",
   "pytest-mqtt",
+  "pytest-repeat",
 ]
 [project.urls]
 changelog = "https://github.com/daq-tools/node-blue/blob/main/CHANGES.md"
