@@ -10,7 +10,7 @@ def test_js_basic_python_mjs(capfd):
 
     out, err = capfd.readouterr()
     assert (
-        "Result is: Munch({'payload': Munch({'temperature': 5.79}), 'topic': 'foo/metric'})" in out
+        "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out
     ), f"""
 
 The command was:
@@ -33,7 +33,7 @@ def test_js_basic_python_js(capfd):
 
     out, err = capfd.readouterr()
     assert (
-        "Result is: Munch({'payload': Munch({'temperature': 5.79}), 'topic': 'foo/metric'})" in out
+        "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out
     ), f"""
 
 The command was:

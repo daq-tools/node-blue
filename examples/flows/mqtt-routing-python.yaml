@@ -40,10 +40,12 @@
   type: python-function
   func: |-
     if msg.topic.endswith("imperial"):
+      #raise ValueError("foo")
       msg.payload.temperature = round((float(msg.payload.temperature) - 32) * 5 / 9, 2)
       msg.topic = msg.topic.replace("imperial", "metric")
-      send(msg)
-    done()
+      return msg
+      #send(msg)
+    #done()
   wires: [
     [
       "sink.3539af",

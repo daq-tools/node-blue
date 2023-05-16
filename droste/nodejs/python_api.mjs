@@ -1,7 +1,5 @@
 /**
- *
  * Droste's JavaScript API for invoking Python code snippets.
- *
  */
 import {PyClass, python} from 'pythonia'
 
@@ -17,6 +15,8 @@ export class PythonCodeBox extends PyClass {
     /**
      * Materialize Python code snippet as callable function.
      *
+     * TODO: It is currently a bit specific to Node-RED. How can it be generalized?
+     *
      * @param name {String}
      * @param pycode {String}
      * @returns {Promise<void>}
@@ -28,22 +28,24 @@ export class PythonCodeBox extends PyClass {
         //       Can the arguments to anonymous code be introspected somehow? Like, reasoning
         //       "all symbols not available in Python's global scope must be arguments on the
         //       function call"? Is it sane?
-        return await this.py_register(name, pycode, {kwargs: ["msg"]})
+        return await this.py_register(name, pycode, {kwargs: ["msg", "send", "done"]})
     }
 
     /**
      * Invoke generated function.
      *
      * @param name {String}
-     * @param data {Any}
+     * @param options {Object}
      * @returns {Promise<*>}
      */
-    async invoke(name, data) {
+    async invoke(name, options) {
 
-        console.log(`Invoking function: ${name}(${JSON.stringify(data)})`)
+        const { msg, send, done } = options;
+
+        console.log(`Invoking function: ${name}(${JSON.stringify(msg)})`)
 
         // Translate dictionary to munch, providing object-style dotted access to its attributes/items.
-        let data_as_object = await munch.munchify(data)
+        const msg_munch = await munch.munchify(msg)
 
         // Resolve special function reference to call Python function with keyword arguments (`**kwargs`).
         // When you do a function call with a `$` before the parenthesis, for example `await some.pythonCall$()`,
@@ -52,7 +54,16 @@ export class PythonCodeBox extends PyClass {
         let fun = this[`${name}$`]
 
         // Invoke the user-defined function, with transformation data as keyword arguments, and return its result.
-        return await fun(data_as_object)
+        const options_out = {msg: msg_munch, send: send, done: done}
+        try {
+            const result = await fun(options_out)
+            const result_unmunched = await munch.unmunchify(result);
+            console.debug(`Result from user-defined function: ${result_unmunched}`)
+            return result_unmunched
+        } catch (e) {
+            const errmsg = `Invoking user-defined function failed: ${e.toString()}\n${e.stack}`
+            done(errmsg)
+        }
     }
 
 }
