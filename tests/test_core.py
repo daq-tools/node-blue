@@ -123,7 +123,6 @@ async def test_mqtt_routing_python(mosquitto, capmqtt):
 
     # Publish MQTT message, and verify response message.
     capmqtt.publish("testdrive/imperial", json.dumps({"temperature": 42.42}))
-    # scsdcs
     wait(0.05)
 
     assert capmqtt.messages == [

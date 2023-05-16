@@ -28,7 +28,7 @@
   wires: [
     [
       "transformation.66571b",
-      #"debugging.b01683",
+      "debugging.b01683",
     ]
   ]
 
@@ -67,10 +67,10 @@
   outputs: 1
   noerr: 0
   initialize: |-
-    console.log("mqtt-unit-rewriting: start");
+    console.log("mqtt-unit-rewriting: start")
   func: |-
-    console.log("mqtt-unit-rewriting: trace");
-    console.log(msg);
-    return msg;
+    console.log("mqtt-unit-rewriting: trace")
+    console.log(msg)
+    return msg
   finalize: |-
-    console.log("mqtt-unit-rewriting: stop");
+    console.log("mqtt-unit-rewriting: stop")
