@@ -69,6 +69,5 @@
   func: |-
     console.log("mqtt-unit-rewriting: message");
     console.log(msg);
-    return msg;
   finalize: |-
     console.log("mqtt-unit-rewriting: stop");

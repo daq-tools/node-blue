@@ -76,7 +76,7 @@
     "outputs": 1,
     "noerr": 0,
     "initialize": "console.log(\"mqtt-unit-rewriting: start\");\n",
-    "func": "console.log(\"mqtt-unit-rewriting: message\");\nconsole.log(msg);\nreturn msg;\n",
+    "func": "console.log(\"mqtt-unit-rewriting: message\");\nconsole.log(msg);\n",
     "finalize": "console.log(\"mqtt-unit-rewriting: stop\");\n",
   },
 
