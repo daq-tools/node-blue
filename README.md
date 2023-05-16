@@ -11,6 +11,11 @@ The idea is to embed [Node-RED] into Python programs, in order to leverage it
 for a number of use cases, like system automation, software testing, parallel
 execution, etc.
 
+The other idea is to extend the Node-RED ecosystem by leveraging other programming
+languages and their ecosystems natively, beyond what JavaScript/NPM can do. We made
+a start with Python, using the excellent [JSPyBridge] package.
+
+
 
 ## Synopsis
 
@@ -86,6 +91,37 @@ believe it offers the best conciseness and convenience, and is also being used b
 node-blue launch --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/mqtt-unit-rewriting.yaml
 ```
 :::
+### Python user-defined functions
+
+This time, let's use the [Python] language, to define a user-defined function within the
+flow step.
+```shell
+wget https://github.com/daq-tools/node-blue/raw/main/examples/flows/mqtt-routing-python.yaml
+node-blue launch --flow=examples/flows/mqtt-routing-python.yaml
+```
+
+```yaml
+# The transformation node element uses a function written in Python to convert from
+# Fahrenheit to Celsius, and to rewrite the MQTT topic from `imperial` to `metric`.
+# The outcome will be the amended MQTT message object, which can be passed to the `mqtt out`
+# data sink node without further ado.
+- id: transformation.66571b
+  type: python-function
+  func: |-
+    if msg.topic.endswith("imperial"):
+      msg.payload.temperature = round((float(msg.payload.temperature) - 32) * 5 / 9, 2)
+      msg.topic = msg.topic.replace("imperial", "metric")
+      send(msg)
+    done()
+  wires: [
+    [
+      "sink.3539af",
+    ]
+  ]
+
+```
+
+
 
 
 ## Etymology

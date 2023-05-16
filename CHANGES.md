@@ -11,3 +11,4 @@
 - [core] Rename bootstrap file `minired.js` to `blue.js`
 - [core] Improve Node-RED bootloader
 - [lang] Add "Droste", to assist running Python and Lua code on Node-RED
+- [lang] Enable writing user-defined functions in Python

@@ -103,3 +103,34 @@ async def test_mqtt_unit_rewriting_yaml(mosquitto, capmqtt):
     # Wait until termination.
     blue.stop()
     await blue.forever()
+
+
+@pytest.mark.skipif(
+    sys.platform in ["darwin", "win32"] and "GITHUB_ACTION" in os.environ,
+    reason="By default, there is no Docker installation on GHA for macOS and Windows",
+)
+@pytest.mark.asyncio
+@pytest.mark.capmqtt_decode_utf8
+async def test_mqtt_routing_python(mosquitto, capmqtt):
+    # Configure Node-BLUE flow manager.
+    fm = FlowManager()
+    fm.load_flow("examples/flows/mqtt-routing-python.yaml")
+
+    # Start Node-RED, and terminate immediately.
+    blue = NodeBlue(fm=fm)
+    blue.start().wait_started()
+    wait(0.05)
+
+    # Publish MQTT message, and verify response message.
+    capmqtt.publish("testdrive/imperial", json.dumps({"temperature": 42.42}))
+    # scsdcs
+    wait(0.05)
+
+    assert capmqtt.messages == [
+        MqttMessage(topic="testdrive/imperial", payload='{"temperature": 42.42}', userdata=None),
+        MqttMessage(topic="testdrive/metric", payload='{"temperature":5.79}', userdata=None),
+    ]
+
+    # Wait until termination.
+    blue.stop()
+    await blue.forever()

@@ -1,0 +1,74 @@
+#
+# An example Node-RED flow file written in YAML format.
+#
+# YAML is a human-friendly data serialization language for all programming languages.
+#
+# The major features used here, are inline comments, and multiline strings. Because no
+# line-continuation characters are needed, it's the perfect format for inlining
+# code snippets verbatim, see node element `transformation.55460a`.
+#
+# https://yaml.org/
+#
+
+# The MQTT broker node configures the connection to the MQTT broker. It is
+# used within the `source` as well as the `sink` node elements.
+- id: broker.3670f7b
+  type: mqtt-broker
+  broker: localhost
+  port: "1883"
+  autoConnect: true
+
+# The MQTT input node mounts an MQTT subscriber handler on the designated `topic`.
+# It emits its outcome to the transformation-, and the debugging node elements.
+- id: source.c68970
+  type: mqtt in
+  topic: testdrive/#
+  datatype: auto-detect
+  broker: broker.3670f7b
+  wires: [
+    [
+      "transformation.66571b",
+      #"debugging.b01683",
+    ]
+  ]
+
+# The transformation node element uses a function written in Python to convert from
+# Fahrenheit to Celsius, and to rewrite the MQTT topic from `imperial` to `metric`.
+# The outcome will be the amended MQTT message object, which can be passed to the `mqtt out`
+# data sink node without further ado.
+- id: transformation.66571b
+  type: python-function
+  func: |-
+    if msg.topic.endswith("imperial"):
+      msg.payload.temperature = round((float(msg.payload.temperature) - 32) * 5 / 9, 2)
+      msg.topic = msg.topic.replace("imperial", "metric")
+      send(msg)
+    done()
+  wires: [
+    [
+      "sink.3539af",
+    ]
+  ]
+
+# The `mqtt out` sink node element will emit the amended message to the same MQTT broker again.
+- id: sink.3539af
+  type: mqtt out
+  broker: broker.3670f7b
+
+# The debugging node element informs about the lifecycle of the flow, by emitting
+# corresponding log messages on flow initialization and teardown, and when a request
+# is handled.
+- id: debugging.b01683
+  type: function
+  name: Debugging
+  info: A basic debugging node to demonstrate the lifecycle of a flow.
+  outputs: 1
+  noerr: 0
+  initialize: |-
+    console.log("mqtt-unit-rewriting: start");
+  func: |-
+    console.log("mqtt-unit-rewriting: trace");
+    console.log(msg);
+    return msg;
+  finalize: |-
+    console.log("mqtt-unit-rewriting: stop");
