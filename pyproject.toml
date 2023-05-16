@@ -99,13 +99,16 @@ dependencies = [
   "funcy<3",
   "javascript==1!1.0.1",
   "json5<1",
+  "pygments<3",
   "pyyaml<7",
   "requests<3",
+  "runs<2",
   "tabulate<1",
 ]
 [project.optional-dependencies]
 develop = [
   "black<24",
+  "munch<4",
   "mypy==1.3",
   "poethepoet<0.20",
   "pyproject-fmt<0.12",
@@ -178,7 +181,7 @@ log_cli = true  # Enable to receive way more log details on stdout.
 log_cli_level = "DEBUG"
 log_level = "DEBUG"
 log_format = "%(asctime)-15s [%(name)-24s] %(levelname)-7s: %(message)s"
-testpaths = ["examples", "node_blue", "tests"]
+testpaths = ["examples", "droste", "node_blue", "tests"]
 xfail_strict = true
 markers = [
   "capmqtt_decode_utf8",
@@ -186,7 +189,7 @@ markers = [
 
 [tool.coverage.run]
 branch = false
-source = ["node_blue"]
+source = ["droste", "node_blue"]
 
 [tool.coverage.report]
 fail_under = 0

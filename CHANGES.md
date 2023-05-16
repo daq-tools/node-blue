@@ -10,3 +10,4 @@
 - [fm] Add YAML flow variant of the JSON5 variant
 - [core] Rename bootstrap file `minired.js` to `blue.js`
 - [core] Improve Node-RED bootloader
+- [lang] Add "Droste", to assist running Python and Lua code on Node-RED
