@@ -1,8 +1,17 @@
 # Node-BLUE
 
-_Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / 
-Efficient test harnesses for Node-RED / Headless Node-RED / Improved development
-cycle times / Now it all makes sense_
+[Node-BLUE] is a friendly wrapper around [Node-RED].
+
+_Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML /
+Write Node-RED user-defined functions in Python / Efficient test harnesses for Node-RED /
+True headless Node-RED / Improved development iteration times / Node-RED without needing
+to take the red pill / Node-BLUE is Node-RED on rails / Now it all makes sense_
+
+:::{todo}
+This list should make it into the »Features« section.
+:::
+
+Here be dragons.
 
 
 ## About
@@ -19,7 +28,9 @@ a start with Python, using the excellent [JSPyBridge] package.
 
 ## Synopsis
 
-### Command-line use.
+
+### Command-line use
+
 Install [Node-BLUE] and [HTTPie], and their prerequisites.
 ```shell
 pip install httpie https://github.com/daq-tools/node-blue
@@ -28,16 +39,17 @@ node-blue setup
 
 Start Node-BLUE with a Node-RED flow defining an HTTP/HTML endpoint/responder.
 ```shell
+# Launch Node-BLUE/Node-RED.
 node-blue launch --flow=examples/flows/http-html-templating.json
 node-blue launch --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/http-html-templating.json
-```
 
-Run an example HTTP request.
-```shell
+# Run an example HTTP request.
 http http://localhost:1880/hello-form name=Hotzenplotz
 ```
 
-### Library use.
+
+### Library use
+
 ```python
 import asyncio
 from node_blue.core import NodeBlue
@@ -63,14 +75,26 @@ if __name__ == "__main__":
 
 ## Examples
 
-### MQTT
+### Introduction
 
-Start Node-BLUE with a Node-RED flow defining an MQTT topic rewrite and message transformation
-step. Note that this example uses the [JSON5] format, which has a few advantages over regular
-JSON, like inline comments, and multi-line strings.
+Unless otherwise noted, all subsequent examples can be exercised using MQTT. You will
+start the [Mosquitto] MQTT broker, subscribe to a topic, and publish a JSON message,
+which will be processed by a Node-RED flow definition.
+
+All flow definitions implement the same rule, and as such, can be triggered by using
+the same MQTT messages, outlined below. For demonstration purposes, the transformation
+rule is very simple: It applies a unit conversion formula to a numeric input parameter,
+effectively converting value units, from Fahrenheit to Celsius. In order to not mix
+things up, the outcome will be published to a different MQTT topic.
+
+This effectively demonstrates message routing and republishing capabilities in both
+terms of content transformation and topic rewriting. The procedures can be applied
+to any message broker system, we just used MQTT here, because it is so convenient
+to operate.
+
 ```shell
-wget https://github.com/daq-tools/node-blue/raw/main/examples/flows/mqtt-unit-rewriting.json5
-node-blue launch --flow=mqtt-unit-rewriting.json5
+docker run --name=mosquitto -it --rm --publish=1883:1883 eclipse-mosquitto:2.0 \
+  mosquitto -c /mosquitto-no-auth.conf
 ```
 
 Subscribe to the broker to observe the outcome.
@@ -83,14 +107,70 @@ Run an example MQTT publish.
 echo '{"temperature": 42.42}' | mosquitto_pub -t 'testdrive/imperial' -l
 ```
 
-:::{tip}
-Alternatively, you can also use the [YAML] format for writing flow recipes. The authors
-believe it offers the best conciseness and convenience, and is also being used by the
+### JSON5 flow format
+
+Start Node-BLUE with a Node-RED flow defining an MQTT topic rewrite and message transformation
+step. Note that this example uses the [JSON5] format, which has a few advantages over regular
+JSON, like inline comments, and multi-line strings.
+```shell
+wget https://github.com/daq-tools/node-blue/raw/main/examples/flows/mqtt-unit-rewriting.json5
+node-blue launch --flow=mqtt-unit-rewriting.json5
+```
+This flow snippet demonstrates JSON5 capabilities on behalf of a sensible example.
+```json5
+// The transformation node element uses a function written in JavaScript to convert from
+// Fahrenheit to Celsius, and to rewrite the MQTT topic from `imperial` to `metric`.
+// The outcome will be the amended MQTT message object, which can be passed to the `mqtt out`
+// data sink node without further ado.
+{
+  "id": "transformation.55460a",
+  "type": "function",
+  "func": "\
+    if (msg.topic.endsWith('imperial')) { \
+      msg.payload.temperature = Number.parseFloat(((Number.parseFloat(msg.payload.temperature) - 32) * 5 / 9).toFixed(2)); \
+      msg.topic = msg.topic.replace('imperial', 'metric'); \
+      return msg; \
+    } \
+  ",
+  "wires": [
+    [
+      "sink.3539af",
+    ]
+  ]
+}
+```
+
+### YAML flow format
+
+You can also use the [YAML] format for writing flow recipes. The authors believe it offers
+the best conciseness and convenience, with even better multi-line code blocks, without needing
+any sorts of line-continuation characters. YAML is already used by the
 [node-red-contrib-flow-manager] and [node-red-contrib-yaml-storage] plugins.
 ```shell
 node-blue launch --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/mqtt-unit-rewriting.yaml
 ```
-:::
+With this example flow snippet, you will immediately recognize how convenient it is,
+especially for user-defined functions.
+```yaml
+# The transformation node element uses a function written in JavaScript to convert from
+# Fahrenheit to Celsius, and to rewrite the MQTT topic from `imperial` to `metric`.
+# The outcome will be the amended MQTT message object, which can be passed to the `mqtt out`
+# data sink node without further ado.
+- id: transformation.55460a
+  type: function
+  func: |-
+    if (msg.topic.endsWith('imperial')) {
+      msg.payload.temperature = Number.parseFloat(((Number.parseFloat(msg.payload.temperature) - 32) * 5 / 9).toFixed(2));
+      msg.topic = msg.topic.replace('imperial', 'metric');
+      return msg;
+    }
+  wires: [
+    [
+      "sink.3539af",
+    ]
+  ]
+```
+
 ### Python user-defined functions
 
 This time, let's use the [Python] language, to define a user-defined function within the
@@ -118,10 +198,13 @@ node-blue launch --flow=examples/flows/mqtt-routing-python.yaml
       "sink.3539af",
     ]
   ]
-
 ```
 
 
+## References
+
+See also the IBM Data management article about [Implementing ETL flows with
+Node-RED] by [Ondrej Lehota].
 
 
 ## Etymology
@@ -162,6 +245,7 @@ Thank you!
 [@extremeheat]: https://github.com/extremeheat
 [Guido van Rossum]: https://github.com/gvanrossum
 [HTTPie]: https://httpie.io/
+[Implementing ETL flows with Node-RED]: https://developer.ibm.com/articles/implementing-etl-flows-with-node-red/
 [JavaScript]: https://en.wikipedia.org/wiki/JavaScript
 [JSON5]: https://json5.org/
 [JSPyBridge]: https://github.com/extremeheat/JSPyBridge
@@ -174,6 +258,7 @@ Thank you!
 [Node-RED]: https://github.com/node-red/node-red
 [node-red-contrib-flow-manager]: https://flows.nodered.org/node/node-red-contrib-flow-manager
 [node-red-contrib-yaml-storage]: https://flows.nodered.org/node/node-red-contrib-yaml-storage
+[Ondrej Lehota]: https://github.com/barshociaj
 [Python]: https://en.wikipedia.org/wiki/Python_(programming_language)
 [Roger Light]: https://github.com/ralight
 [Ryan Dahl]: https://github.com/ry
