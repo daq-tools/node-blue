@@ -13,6 +13,7 @@ import typing as t
 
 import tabulate
 
+from droste.nodejs.basic import mkpyfun
 from node_blue.hal import NodeBlueContext, jsrun
 from node_blue.util import run_later, wait, acquire_text_resource
 
@@ -81,6 +82,7 @@ class NodeBlue:
         global JavaScript scope.
         """
         logger.info("Connecting Node-BLUE with Node-RED")
+        javascript.globalThis.mkpyfun = mkpyfun
         javascript.globalThis.blue = self
 
     def get_flows(self):
@@ -148,8 +150,7 @@ class NodeBlue:
         logger.info("Cancelling Node-RED wrapper task")
         if self.context.task is not None:
             self.stopping = True
-            self.context.task.cancel()
-            wait(0.05)
+            asyncio.create_task(run_later(self.context.task.cancel, 0.05))
         return self
 
     def is_started(self) -> bool:

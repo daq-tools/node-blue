@@ -14,8 +14,8 @@ def mkpyfun(code: str):
 
     def receiver(kwargs):
         # print("args:", args)
-        print("kwargs:", kwargs)
-        logger.info("EVALUATE!")
+        # print("kwargs:", kwargs)
+        # logger.info("EVALUATE!")
         # locals().update(munchify(kwargs))
         ns = munchify(kwargs)
         exec(code, {}, ns)

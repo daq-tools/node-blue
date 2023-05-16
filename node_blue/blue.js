@@ -57,9 +57,9 @@ red.shutdown = function() {
     red_server.shutdown(async function(err) {
         if (err) {
             red.log.info(`HTTP server: Shutdown failed. Reason: ${err}`);
-            return;
+        } else {
+            red.log.info("HTTP server: Shutdown completed");
         }
-        red.log.info("HTTP server: Shutdown completed");
         red.log.info("Node-RED: Shutting down");
         await red.stop();
         red.nodes.cleanModuleList();
@@ -104,6 +104,9 @@ async function launch_red(http_port, http_host) {
 
     // Configure Node-RED context.
     red.init(red_server, options);
+
+    // Register Node-BLUE's extension types.
+    await register_types();
 
     // Connect to Node-BLUE's flow provider.
     await connect_flow_provider();
@@ -151,6 +154,23 @@ async function connect_flow_provider() {
         return retVal;
     };
 }
+
+/**
+ * Register Node-RED type extensions.
+ *
+ * @returns {Promise<void>}
+ */
+async function register_types() {
+    red.log.info("minired: Registering types");
+    // TODO: `@node-loader/import-maps` does not work here.
+    //       Will it be better after packaging `droste` as a real NPM?
+    //       Otherwise, maybe refactor `blue.js` to ES6 module `blue.mjs`?
+    // TODO: Improve after migration to ES6.
+    const PythonFunctionNode = (await import("../droste/nodejs/nodered_python_function.mjs")).PythonFunctionNode
+    red.nodes.registerType("node-blue", "python-function", PythonFunctionNode);
+
+}
+
 
 /**
  * Compute digest to use as flow revision number.
