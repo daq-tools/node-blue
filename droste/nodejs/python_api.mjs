@@ -40,7 +40,7 @@ export class PythonCodeBox extends PyClass {
      */
     async invoke(name, options) {
 
-        const { msg, send, done } = options;
+        const { msg, send, done } = options
 
         console.log(`Invoking function: ${name}(${JSON.stringify(msg)})`)
 
@@ -57,7 +57,7 @@ export class PythonCodeBox extends PyClass {
         const options_out = {msg: msg_munch, send: send, done: done}
         try {
             const result = await fun(options_out)
-            const result_unmunched = await munch.unmunchify(result);
+            const result_unmunched = await munch.unmunchify(result)
             console.debug(`Result from user-defined function: ${result_unmunched}`)
             return result_unmunched
         } catch (e) {

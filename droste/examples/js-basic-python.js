@@ -33,7 +33,7 @@ let PythonCodeBox
     //       Otherwise, just prefer the ES6 variant!
     PythonCodeBox = (await import("../nodejs/python_api.mjs")).PythonCodeBox
     await Application.run()
-})();
+})()
 
 
 // The Python user-defined function to be executed.
@@ -107,7 +107,7 @@ class Util {
     // sleep() equivalent for vanilla Javascript using ES6 features.
     // https://gist.github.com/celsobessa/bd675278ae44a6edc1e2d308d7f742a5
     static sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms))
     }
 
 }
