@@ -13,3 +13,4 @@
 - [lang] Add "Droste", to assist running Python and Lua code on Node-RED
 - [lang] Enable writing user-defined functions in Python
 - [js] Convert wrapper `blue.js` to an ES6 module `blue.mjs`
+- [js] Improve bootstrapping / module loading / importing

@@ -208,4 +208,4 @@ async function launch_blue() {
 
 
 // Export symbols.
-export { red, launch_blue }
+export { launch_blue, red }

@@ -17,17 +17,22 @@ class NodeBlueContext:
     task: t.Optional[asyncio.Task]
 
 
-def jsrun(program: t.Union[str, Path]) -> NodeBlueContext:
-    bootloader = open(program).read()
+def jsrun(__program: t.Union[str, Path], __global_variables: t.Optional[t.Dict[str, t.Any]] = None) -> NodeBlueContext:
+    __bootloader__ = open(__program).read()
     module: t.Dict = {}
-    retval = javascript.eval_js(bootloader)
+
+    __global_variables = __global_variables or {}
+    for key, value in __global_variables.items():
+        javascript.globalThis[key] = value
+
+    retval = javascript.eval_js(__bootloader__)
     threading.Event().wait(0.01)
     # print("retval:", retval)
 
     current_task = asyncio.current_task()
 
     ctx = NodeBlueContext(
-        program=program,
+        program=__program,
         retval=retval,
         module=module,
         task=current_task,
