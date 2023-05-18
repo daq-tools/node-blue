@@ -20,12 +20,15 @@
 
 // TODO: Refactor this file to ES6 module?
 
-// Import `blue.mjs`. `BLUE_MODULE_FILE` will be obtained from `NodeBlue`.
-const { launch_blue, red } = await import(BLUE_MODULE_FILE)
-
-// Global reference to Node-RED.
-// FIXME: Do not use global variables.
-global["RED"] = red
+// Import `blue.mjs`. `BLUE_MODULE_FILE` will be obtained from Python's `NodeBlue`.
+const { NodeBlueApplication, red } = await import(BLUE_MODULE_FILE)
 
 // Launch Node-BLUE.
-await launch_blue()
+const blue = new NodeBlueApplication(BLUE_SETTINGS)
+await blue.setup()
+await blue.start()
+
+// Global references to Node-RED and Node-BLUE.
+// FIXME: Do not use global variables.
+global["RED"] = red
+global["BLUE"] = blue
