@@ -24,8 +24,10 @@
  * Minimal Node-RED JavaScript bootloader.
  *
  * Derived from:
- * https://github.com/node-red/node-red/blob/master/packages/node_modules/node-red/red.js
- * https://github.com/oyajiDev/NodeRED.py/blob/master/noderedpy/node-red-starter/index.js
+ * - https://nodered.org/docs/user-guide/runtime/embedding
+ * - https://github.com/node-red/node-red/blob/master/packages/node_modules/node-red/red.js
+ * - https://github.com/node-red/node-red/blob/master/packages/node_modules/node-red/lib/red.js
+ * - https://github.com/oyajiDev/NodeRED.py/blob/master/noderedpy/node-red-starter/index.js
  *
 **/
 
@@ -50,7 +52,7 @@ const red_server = http_shutdown(base_server);
 
 
 /**
- * Add a central Node-RED shutdown function.
+ * An improved Node-RED shutdown function.
  */
 red.shutdown = function() {
     red.log.info("HTTP server: Shutting down");
@@ -80,7 +82,7 @@ async function launch_red(http_port, http_host) {
     red.log.info("minired: Starting");
 
     // Blueprint: .venv/lib/python3.11/site-packages/javascript/js/node_modules/node-red/settings.js
-    let options = {
+    const settings = {
         // HTTP API is mountpoint.
         httpNodeRoot: "/",
 
@@ -95,7 +97,10 @@ async function launch_red(http_port, http_host) {
         userDir: "./var",
 
         // Configure editor theme and categories.
+        // TODO: Currently, Node-RED crashes when `@node-red-contrib-themes/theme-collection` is installed.
         editorTheme: {
+
+            // Choose a theme from the collection.
             // https://github.com/node-red-contrib-themes/theme-collection
             theme: "dracula",
 
@@ -107,15 +112,26 @@ async function launch_red(http_port, http_host) {
         // Your flow credentials file is encrypted using a system-generated key.
         // You should set your own key using the 'credentialSecret' option in
         // your settings file.
+        // TODO: Improve and document.
         credentialSecret: "shandafonphiteccuwykteid",
 
-        // Do those even exist?
-        verbose: true,
-        debug: true,
+        // Configure the logger.
+        // https://nodered.org/docs/user-guide/runtime/logging
+        logging: {
+            // Console logging
+            console: {
+                level: "info",
+                // When set to true, flow execution and memory usage information are logged.
+                metrics: false,
+                // When set to true, the Admin HTTP API access events are logged.
+                audit: false
+            }
+        },
+
     };
 
     // Configure Node-RED context.
-    red.init(red_server, options);
+    red.init(red_server, settings);
 
     // Register Node-BLUE's extension types.
     await register_types();
@@ -124,19 +140,21 @@ async function launch_red(http_port, http_host) {
     await connect_flow_provider();
 
     // Node-RED default routes.
+    // TODO: Serve static `web` from directory within Python package.
     express_app.use("/", express.static("web"));
     express_app.use(red.settings.httpAdminRoot, red.httpAdmin);
     express_app.use(red.settings.httpNodeRoot, red.httpNode);
 
     // Start Node-RED.
-    red.start().then(() => {
-        red.log.info("minired: Node-RED starting");
-        red_server.listen(http_port, http_host, () => {
-            red.log.info(`minired: HTTP admin interface started on http://${http_host}:${http_port}${red.settings.httpAdminRoot}`);
-            // let active_flows = await red.runtime.flows.getFlows({});
-            // console.log("Active flows:", active_flows);
-        });
-    });
+    red.log.info(`minired: Starting HTTP admin interface at http://${http_host}:${http_port}${red.settings.httpAdminRoot}`)
+    await red_server.listen(http_port, http_host)
+
+    red.log.info("minired: Starting Node-RED")
+    await red.start()
+    red.log.info("minired: Node-RED started successfully")
+
+    // let active_flows = await red.runtime.flows.getFlows({});
+    // console.log("Active flows:", active_flows);
 
 }
 
