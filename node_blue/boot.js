@@ -19,10 +19,10 @@
  **/
 
 
-// Import `blue.js`. `__PROGRAM__` will be obtained from `NodeBlue`.
+// Import `blue.mjs`. `__PROGRAM__` will be obtained from `NodeBlue`.
 // TODO: Refactor to ES6 module.
 let __PROGRAM__ = global["__PROGRAM__"]
-const { launch_blue, red } = await require(__PROGRAM__)
+const { launch_blue, red } = await import(__PROGRAM__)
 
 // Reference to Node-RED.
 // FIXME: Do not use global variables.
