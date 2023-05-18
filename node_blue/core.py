@@ -13,7 +13,6 @@ import typing as t
 
 import tabulate
 
-from droste.nodejs.basic import mkpyfun
 from node_blue.hal import NodeBlueContext, jsrun
 from node_blue.util import run_later, wait, acquire_text_resource
 
@@ -89,7 +88,6 @@ class NodeBlue:
         global JavaScript scope.
         """
         logger.info("Connecting Node-BLUE with Node-RED")
-        javascript.globalThis.mkpyfun = mkpyfun
         javascript.globalThis.blue = self
 
     def get_flows(self):
@@ -117,21 +115,14 @@ class NodeBlue:
         bootloader = str(node_blue_resources.joinpath("boot.js"))
         program = str(node_blue_resources.joinpath("blue.mjs"))
 
-        # Inquire main module paths.
-        module_paths = javascript.eval_js("return module.paths")
-
-        # Populate global settings to send parameters to the bootloader subsystem.
-        javascript.globalThis["__PROGRAM__"] = program
-        javascript.globalThis["__CONTAINER_PATHS__"] = module_paths
-
         # Invoke bootloader.
-        self.context = jsrun(bootloader)
+        self.context = jsrun(bootloader, {"BLUE_MODULE_FILE": program})
 
         # TODO: Improve. Use events.
         wait(0.05)
 
         # FIXME: Do not use global variables.
-        self.red = javascript.globalThis["red"]
+        self.red = javascript.globalThis["RED"]
 
         return self
 

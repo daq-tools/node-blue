@@ -18,15 +18,14 @@
  * limitations under the License.
  **/
 
+// TODO: Refactor this file to ES6 module?
 
-// Import `blue.mjs`. `__PROGRAM__` will be obtained from `NodeBlue`.
-// TODO: Refactor to ES6 module.
-let __PROGRAM__ = global["__PROGRAM__"]
-const { launch_blue, red } = await import(__PROGRAM__)
+// Import `blue.mjs`. `BLUE_MODULE_FILE` will be obtained from `NodeBlue`.
+const { launch_blue, red } = await import(BLUE_MODULE_FILE)
 
-// Reference to Node-RED.
+// Global reference to Node-RED.
 // FIXME: Do not use global variables.
-global["red"] = red
+global["RED"] = red
 
 // Launch Node-BLUE.
 await launch_blue()

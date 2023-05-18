@@ -17,12 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import {PythonCodeBox} from "../droste/nodejs/python_api.mjs"
-
-// TODO: Improve after migration to ES6.
-// import { red } from "blue"
-const blue = await import("./blue.mjs")
-const red = blue.red
+import { red } from "./blue.mjs"
+import { PythonCodeBox } from "../droste/nodejs/python_api.mjs"
 
 
 /**
