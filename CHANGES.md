@@ -14,3 +14,4 @@
 - [lang] Enable writing user-defined functions in Python
 - [js] Convert wrapper `blue.js` to an ES6 module `blue.mjs`
 - [js] Improve bootstrapping / module loading / importing
+- [js] Refactor `blue.mjs` to use OO

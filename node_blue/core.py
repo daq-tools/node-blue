@@ -58,6 +58,7 @@ class NodeBlue:
         self.listen = listen
         self.context: NodeBlueContext
         self.red: ModuleType
+        self.blue: ModuleType
         self.stopping = False
         self.configure()
 
@@ -88,7 +89,9 @@ class NodeBlue:
         global JavaScript scope.
         """
         logger.info("Connecting Node-BLUE with Node-RED")
-        javascript.globalThis.blue = self
+
+        # FIXME: Do not use global variables.
+        javascript.globalThis["blue_context"] = self
 
     def get_flows(self):
         """
@@ -116,13 +119,16 @@ class NodeBlue:
         program = str(node_blue_resources.joinpath("blue.mjs"))
 
         # Invoke bootloader.
-        self.context = jsrun(bootloader, {"BLUE_MODULE_FILE": program})
+        # TODO: Investigate different kinds of bootstrapping.
+        #       Maybe also use `PyClass`?
+        self.context = jsrun(bootloader, {"BLUE_MODULE_FILE": program, "BLUE_SETTINGS": {"listen": self.listen}})
 
         # TODO: Improve. Use events.
         wait(0.05)
 
         # FIXME: Do not use global variables.
         self.red = javascript.globalThis["RED"]
+        self.blue = javascript.globalThis["BLUE"]
 
         return self
 
@@ -132,16 +138,20 @@ class NodeBlue:
 
         Note: Node-RED's inline documentation at `red.stop()` says:
 
-        > Once called, Node-RED should not be restarted until the Node.JS process is restarted.
+        > Once called, Node-RED should not be restarted until the Node.JS
+        > process is restarted.
 
-        Indeed, when called, then on another call to `red.init()` Node-RED will croak `Cannot init without a stop`.
+        Indeed, when called, then on another call to `red.init()` Node-RED will
+        croak like `Cannot init without a stop`.
 
-        However, by using the `http-shutdown` package, it seems to work well to set up an teardown
-        Node-RED multiple times without needing to restart the interpreter, Python and Node.JS.
+        However, by using the `http-shutdown` package, it seems to work well to
+        set up and teardown Node-RED multiple times without needing to restart
+        the interpreter, Python and Node.JS.
         """
 
         logger.info("Node-RED: Sending shutdown signal")
-        self.red.shutdown()
+        # TODO: Do something more meaningful with response from shutdown task.
+        shutdown_status = self.blue.stop()  # noqa: F841
         self.wait_stopped()
         logger.info("Node-RED: Shutdown completed")
 
@@ -250,7 +260,7 @@ async def launch_blue(listen: str, flow: t.Union[str, Path]):
     fm.load_flow(flow)
 
     # Start Node-RED, and wait until termination.
-    blue = NodeBlue(fm=fm)
+    blue = NodeBlue(fm=fm, listen=listen)
     await blue.run()
 
 
@@ -264,7 +274,7 @@ async def launch_blue_manual(listen: str, flow: t.Union[str, Path]):
     fm.load_flow(flow)
 
     # Start Node-RED.
-    blue = NodeBlue()
+    blue = NodeBlue(listen=listen)
     blue.start().wait_started()
 
     # Optionally, terminate shortly after.
