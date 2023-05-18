@@ -31,19 +31,16 @@
  *
 **/
 
-
-let __CONTAINER_PATHS__ = global["__CONTAINER_PATHS__"]
-module.paths = module.paths.concat(__CONTAINER_PATHS__)
-
-const python = require("pythonia")
+// Import JavaScript <-> Python subsystem.
+import python from "pythonia";
 const py = python.py
 
 // Import prerequisites.
-const crypto = require("crypto")
-const express = require("express")
-const http = require("http")
-const http_shutdown = require("http-shutdown")
-const red = require("node-red")
+import crypto from "crypto";
+import express from "express";
+import http from "http";
+import http_shutdown from "http-shutdown";
+import red from "node-red";
 
 // Express and Node-RED application / server instances.
 const express_app = express()
@@ -71,10 +68,10 @@ red.shutdown = function() {
 }
 
 
-function load_settings(path) {
+async function load_settings(path) {
     try {
-        const settings = require(path)
-        settings.settingsFile = path
+        const settings = (await import(path)).default
+        // settings.settingsFile = path
         return settings
     } catch(err) {
         console.error(`Loading settings file failed: ${path}`)
@@ -102,7 +99,7 @@ async function launch_red(http_port, http_host) {
     red.log.info("minired: Starting")
 
     // Load Node-RED settings from file.
-    const settings = load_settings("./settings.js")
+    const settings = await load_settings("./settings.js")
 
     // Configure Node-RED context.
     red.init(red_server, settings)
@@ -168,7 +165,7 @@ async function register_types() {
     red.log.info("minired: Registering types")
     // TODO: `@node-loader/import-maps` does not work here.
     //       Will it be better after packaging `droste` as a real NPM?
-    //       Otherwise, maybe refactor `blue.js` to ES6 module `blue.mjs`?
+    //       Otherwise, maybe refactor `blue.mjs` to ES6 module `blue.mjs`?
     // TODO: Improve after migration to ES6.
     const PythonFunctionNode = (await import("./udf_python.mjs")).PythonFunctionNode
     red.nodes.registerType("node-blue", "python-function", PythonFunctionNode)
@@ -211,7 +208,4 @@ async function launch_blue() {
 
 
 // Export symbols.
-module.exports = {
-    red: red,
-    launch_blue: launch_blue,
-}
+export { red, launch_blue }

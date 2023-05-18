@@ -115,7 +115,7 @@ class NodeBlue:
         # Acquire paths to JavaScript code.
         node_blue_resources = importlib.resources.files("node_blue")
         bootloader = str(node_blue_resources.joinpath("boot.js"))
-        program = str(node_blue_resources.joinpath("blue.js"))
+        program = str(node_blue_resources.joinpath("blue.mjs"))
 
         # Inquire main module paths.
         module_paths = javascript.eval_js("return module.paths")

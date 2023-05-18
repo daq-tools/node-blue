@@ -21,7 +21,7 @@ import {PythonCodeBox} from "../droste/nodejs/python_api.mjs"
 
 // TODO: Improve after migration to ES6.
 // import { red } from "blue"
-const blue = await import("./blue.js")
+const blue = await import("./blue.mjs")
 const red = blue.red
 
 
