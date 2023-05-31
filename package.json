@@ -3,7 +3,6 @@
     "@node-loader/import-maps": "^1.1.0",
     "http-shutdown": "^1.2.2",
     "node-red": "^3.0.2",
-    "node-red-contrib-postgresql": "^0.12.0",
     "pythonia": "^1.0.1"
   }
 }
