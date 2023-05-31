@@ -35,6 +35,7 @@ Install [Node-BLUE] and [HTTPie], and their prerequisites.
 ```shell
 pip install httpie https://github.com/daq-tools/node-blue
 node-blue setup
+npm install
 ```
 
 Start Node-BLUE with a Node-RED flow defining an HTTP/HTML endpoint/responder.

@@ -52,11 +52,19 @@ jobs:
         cache: 'pip'
         cache-dependency-path: 'pyproject.toml'
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: 'package.json'
+
     - name: Setup project
       run: |
         # Install package in editable mode.
         pip install versioningit wheel
         pip install --editable=.[test,develop]
+        npm install
 
     - name: Check code style
       run: |

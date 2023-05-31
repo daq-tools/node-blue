@@ -15,3 +15,4 @@
 - [js] Convert wrapper `blue.js` to an ES6 module `blue.mjs`
 - [js] Improve bootstrapping / module loading / importing
 - [js] Refactor `blue.mjs` to use OO
+- [js] Add `package.json` and guidelines to satisfy JavaScript prerequisites
