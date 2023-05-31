@@ -37,6 +37,9 @@
 - [o] Spec: https://nodered.org/docs/user-guide/writing-functions
 - [o] Log format? https://nodered.org/docs/user-guide/runtime/logging
 - [o] JSON5 and YAML format support for `settings.json`
+- [o] Test suite fails on Windows
+  - `Error [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file and data are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'`
+  - https://github.com/daq-tools/node-blue/actions/runs/5130333171/jobs/9228981464?pr=2#step:8:524
 
 ## Iteration +2
 - [o] Flow templating? => Environment variables.
@@ -67,7 +70,22 @@
   - https://knolleary.net/node-red-workshop-photobooth/part2/
 - [o] Airflow within Node-RED?
 - [o] https://nodered.org/docs/user-guide/runtime/securing-node-red
-
+- https://github.com/naimo84/awesome-nodered
+- UI: https://flows.nodered.org/collection/590bc13ff3a5f005c7d2189bbb563976
+- Timers
+  - https://github.com/scargill/node-red-contrib-bigtimer
+  - https://tech.scargill.net/big-timer/
+  - https://github.com/node-red/node-red-nodes/tree/master/time/timeswitch
+  - https://flows.nodered.org/node/node-red-contrib-cron-plus
+- PLCs?
+  - https://github.com/Steve-Mcl/node-red-contrib-omron-fins
+  - https://github.com/Steve-Mcl/node-red-contrib-mcprotocol
+- High-quality community nodes
+  - https://github.com/Steve-Mcl/node-red-contrib-image-tools
+  - https://github.com/Steveorevo/node-red-contrib-actionflows
+  - https://github.com/Anamico/node-red-contrib-alarm
+  - https://github.com/hardillb/node-red-contrib-owntracks
+  - https://www.hardill.me.uk/wordpress/2016/04/26/owntracks-encrypted-location-node-red-node/
 
 ## Done
 - [x] Minimize flow JSON

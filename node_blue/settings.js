@@ -47,4 +47,18 @@ module.exports = {
         }
     },
 
+    externalModules: {
+        autoInstall: true,
+        palette: {
+            allowInstall: true,
+        },
+        modules: {
+            allowInstall: true,
+        }
+    },
+
 }
+
+
+// TODO: What about `nodeMessageBufferMaxLength`?
+// https://discourse.nodered.org/t/join-timeout-in-automatic-mode/25228/6

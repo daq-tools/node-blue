@@ -7,6 +7,7 @@ ag registerType .venv/lib/python3.11/site-packages/javascript/js/node_modules/\@
 ```
 
 ## Link collection
+- https://nodered.org/about/
 - https://web.archive.org/web/20210515013546/https://eightbar.eu-gb.mybluemix.net/2014/01/19/node-red-flows-that-make-flows/
 - https://web.archive.org/web/20210515030507/https://eightbar.eu-gb.mybluemix.net/tag/mqtt/
 - https://web.archive.org/web/20210514041559/https://eightbar.eu-gb.mybluemix.net/tag/node-red/
@@ -23,6 +24,8 @@ ag registerType .venv/lib/python3.11/site-packages/javascript/js/node_modules/\@
 - https://github.com/Steveorevo/node-red-contrib-actionflows
 - https://github.com/Anamico/node-red-contrib-alarm
 - https://flows.nodered.org/node/node-red-contrib-queue-gate
+- https://github.com/node-red/node-red-nodes/tree/master/function/datagenerator
+
 
 ### CrateDB
 - https://community.crate.io/t/ingesting-mqtt-messages-into-cratedb-using-node-red/803
@@ -76,3 +79,11 @@ ag registerType .venv/lib/python3.11/site-packages/javascript/js/node_modules/\@
 ### Hosting
 - https://fred.sensetecnic.com/
 - https://flowforge.com/
+
+
+### Misc
+
+> "The difficulty is that things almost always start with some guy doing something that at the time looks totally useless"
+> -- James Burke
+>
+> -- https://www.northarc.com/wrench/www/
