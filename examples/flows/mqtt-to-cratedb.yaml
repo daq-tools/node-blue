@@ -1,0 +1,131 @@
+---
+# Converging telemetry data from MQTT into CrateDB using Node-RED, written in YAML.
+#
+# Derived from:
+# https://community.crate.io/t/ingesting-mqtt-messages-into-cratedb-using-node-red/803
+#
+# See `mqtt-to-cratedb.yaml` for documentation.
+
+
+# =============
+# Configuration
+# =============
+
+# Define MQTT broker settings.
+- id: broker.65ced5b
+  type: mqtt-broker
+  name: MQTT
+  broker: localhost
+  port: "1883"
+  tls: ""
+  clientid: ""
+  usetls: false
+  protocolVersion: "4"
+  keepalive: "60"
+  cleansession: true
+  sessionExpiry: ""
+  credentials: {}
+
+# Define SQL database settings. Using CrateDB here.
+- id: settings-database.79bc378
+  type: postgreSQLConfig
+  name: CrateDB
+  host: localhost
+  port: "5432"
+  database: doc
+  ssl: false
+  max: "10"
+  maxFieldType: num
+  min: "1"
+  minFieldType: num
+  idle: "1000"
+  idleFieldType: num
+  connectionTimeout: "10000"
+  connectionTimeoutFieldType: num
+  user: crate
+  password: ""
+
+
+# ===================
+# Pipeline definition
+# ===================
+
+# The source element.
+# The MQTT input node mounts an MQTT subscriber handler on the designated `topic`.
+# It emits its outcome to the transformation-, and the debugging node elements.
+- id: source.140a9335
+  name: MQTT
+  type: mqtt in
+  broker: broker.65ced5b
+  qos: 2
+  topic: testdrive/data
+  datatype: auto
+  nl: false
+  rap: true
+  wires: [
+    [
+      "buffer.55460a",
+    ]
+  ]
+
+# The buffer component adds chunking/batching for efficiency purposes.
+# It will buffer message, and emit them either after the buffer is full,
+# or after a specified amount of idle time. The `count` and `timeout`
+# settings are defining those values.
+- id: buffer.55460a
+  type: join
+  name: "Buffer"
+  mode: custom
+  build: array
+  property: payload
+  propertyType: msg
+  key: topic
+  joiner: \n
+  joinerType: str
+  accumulate: false
+  timeout: 10
+  count: 2
+  reduceRight: false
+  reduceExp: ""
+  reduceInit: ""
+  reduceInitType: num
+  reduceFixup: ""
+  wires: [
+    [
+      "transform.4d46242",
+    ]
+  ]
+
+# The transformation functions marshals inbound data into an outbound SQL clause.
+- id: transform.4d46242
+  type: function
+  name: ""
+  func: |-
+    msg.payload = msg.payload
+      .reduce(function (values, entry) {
+        // don't append a comma if it's the first entry
+        return values.length == 0 ? "('" + entry + "')" : values + ", ('" + entry + "')";
+      }, "");
+
+    return msg;
+  outputs: 1
+  noerr: 0
+  initialize: ""
+  finalize: ""
+  libs: []
+  wires: [
+    [
+      "database.a8c66b",
+    ]
+  ]
+
+# The data sink is CrateDB, with PostgreSQL connectivity.
+- id: database.a8c66b
+  type: postgresql
+  name: ""
+  query: |
+    INSERT INTO nodered_target (payload) VALUES {{{ msg.payload }}};
+  postgreSQLConfig: settings-database.79bc378
+  split: false
+  rowsPerMsg: 1
+  outputs: 1

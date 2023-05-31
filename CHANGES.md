@@ -16,3 +16,4 @@
 - [js] Improve bootstrapping / module loading / importing
 - [js] Refactor `blue.mjs` to use OO
 - [js] Add `package.json` and guidelines to satisfy JavaScript prerequisites
+- [example] Add MQTT-to-CrateDB example flow

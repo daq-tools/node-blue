@@ -79,6 +79,9 @@ class NodeBlue:
         javascript.require("pythonia", "^1.0.1")
         javascript.require("@node-loader/import-maps", "^1.1.0")
 
+        # FIXME: Currently fails. Why?
+        # javascript.require("node-red-contrib-postgresql", "^0.12.0")
+
         # When this is installed, subtle exceptions will happen, and
         # the test harness stops working, so something is fishy.
         # javascript.require("@node-red-contrib-themes/theme-collection")

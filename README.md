@@ -52,6 +52,12 @@ node-blue launch --flow=https://github.com/daq-tools/node-blue/raw/main/examples
 http http://localhost:1880/hello-form name=Hotzenplotz
 ```
 
+Launch a flow which defines a pipeline to converge data from [MQTT] to [CrateDB].
+```shell
+# Launch Node-BLUE/Node-RED.
+node-blue launch --flow=examples/flows/mqtt-to-cratedb.yaml
+```
+
 
 ### Library use
 
