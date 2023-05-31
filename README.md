@@ -11,7 +11,9 @@ to take the red pill / Node-BLUE is Node-RED on rails / Now it all makes sense_
 This list should make it into the »Features« section.
 :::
 
+:::{attention}
 Here be dragons.
+:::
 
 
 ## About
@@ -20,10 +22,12 @@ The idea is to embed [Node-RED] into Python programs, in order to leverage it
 for a number of use cases, like system automation, software testing, parallel
 execution, etc.
 
+The project has similar intentions like [node-red-embedded-start], offering to
+interact programmatically with the Node-RED API, with a few bells and whistles.
+
 The other idea is to extend the Node-RED ecosystem by leveraging other programming
 languages and their ecosystems natively, beyond what JavaScript/NPM can do. We made
-a start with Python, using the excellent [JSPyBridge] package.
-
+a start with [Python], by using the excellent [JSPyBridge] package.
 
 
 ## Synopsis
@@ -259,6 +263,7 @@ Thank you!
 [Node-RED]: https://github.com/node-red/node-red
 [node-red-contrib-flow-manager]: https://flows.nodered.org/node/node-red-contrib-flow-manager
 [node-red-contrib-yaml-storage]: https://flows.nodered.org/node/node-red-contrib-yaml-storage
+[node-red-embedded-start]: https://www.npmjs.com/package/node-red-embedded-start
 [Ondrej Lehota]: https://github.com/barshociaj
 [Python]: https://en.wikipedia.org/wiki/Python_(programming_language)
 [Roger Light]: https://github.com/ralight
