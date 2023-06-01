@@ -97,7 +97,7 @@ dependencies = [
   "colorama<1",
   "colorlog<7",
   "funcy<3",
-  "javascript==1!1.0.1",
+  "javascript==1!1.0.2",
   "json5<1",
   "pygments<3",
   "pyyaml<7",
