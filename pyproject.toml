@@ -110,7 +110,7 @@ develop = [
   "black<24",
   "munch<4",
   "mypy==1.4.1",
-  "poethepoet<0.21",
+  "poethepoet<0.22",
   "pyproject-fmt<0.13",
   "ruff==0.0.275",
   "types-tabulate",
