@@ -111,7 +111,7 @@ develop = [
   "munch<4",
   "mypy==1.4.1",
   "poethepoet<0.21",
-  "pyproject-fmt<0.13",
+  "pyproject-fmt<1.2",
   "ruff==0.0.275",
   "types-tabulate",
 ]
