@@ -122,7 +122,7 @@ release = [
 ]
 test = [
   "coverage<8",
-  "pytest<8",
+  "pytest<9",
   "pytest-asyncio",
   "pytest-mqtt",
   "pytest-repeat",
