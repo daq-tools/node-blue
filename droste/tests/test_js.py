@@ -9,9 +9,7 @@ def test_js_basic_python_mjs(capfd):
     run(command)
 
     out, err = capfd.readouterr()
-    assert (
-        "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out
-    ), f"""
+    assert "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out, f"""
 
 The command was:
 {command}
@@ -32,9 +30,7 @@ def test_js_basic_python_js(capfd):
     run(command)
 
     out, err = capfd.readouterr()
-    assert (
-        "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out
-    ), f"""
+    assert "Result is: {'payload': {'temperature': 5.79}, 'topic': 'foo/metric'}" in out, f"""
 
 The command was:
 {command}

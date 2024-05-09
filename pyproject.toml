@@ -22,7 +22,7 @@ default-tag = "0.0.0"
 
 [project]
 name = "node-blue"
-description = "Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / Efficient test harnesses for Node-RED /\n  Headless Node-RED / Improved development cycle times / Now it all makes sense"
+description = "Node-RED without a mouse / Node-RED as a library / Write Node-RED flows in YAML / Efficient test harnesses for Node-RED / Headless Node-RED / Improved development cycle times / Now it all makes sense"
 readme = "README.md"
 keywords = [
   "automation",
@@ -107,12 +107,11 @@ dependencies = [
 ]
 [project.optional-dependencies]
 develop = [
-  "black<24",
   "munch<5",
-  "mypy~=1.8.0",
-  "poethepoet<0.26",
-  "pyproject-fmt<1.8",
-  "ruff~=0.3.0",
+  "mypy<1.11",
+  "poethepoet<0.27",
+  "pyproject-fmt<1.9",
+  "ruff<0.5",
   "types-tabulate",
 ]
 release = [
@@ -148,7 +147,7 @@ line-length = 120
 
 [tool.ruff]
 line-length = 120
-ignore = [
+lint.ignore = [
   "E722"  # Do not use bare `except`
 ]
 extend-exclude = [
@@ -202,15 +201,14 @@ show_missing = true
 
 [tool.poe.tasks]
 format = [
-  { cmd = "black ." },
+  { cmd = "ruff format" },
   # Configure Ruff not to auto-fix (remove!):
   # unused imports (F401), unused variables (F841), `print` statements (T201), and commented-out code (ERA001).
-  { cmd = "ruff --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
-  { cmd = "pyproject-fmt pyproject.toml" },
+  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
+  { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
 ]
 lint = [
-  { cmd = "ruff ." },
-  { cmd = "black --check ." },
+  { cmd = "ruff check ." },
   { cmd = "pyproject-fmt --check pyproject.toml" },
   { cmd = "mypy" },
 ]
