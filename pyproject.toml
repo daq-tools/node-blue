@@ -111,7 +111,7 @@ develop = [
   "mypy<1.11",
   "poethepoet<0.27",
   "pyproject-fmt<1.9",
-  "ruff<0.5",
+  "ruff<0.6",
   "types-tabulate",
 ]
 release = [
