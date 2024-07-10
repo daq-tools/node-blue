@@ -1,24 +1,9 @@
-# ==================
-# Build system setup
-# ==================
-
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
   "setuptools>=42", # At least v42 of setuptools required!
   "versioningit",
 ]
-
-[tool.versioningit]
-
-[tool.versioningit.vcs]
-method = "git"
-default-tag = "0.0.0"
-
-
-# ================
-# Project metadata
-# ================
 
 [project]
 name = "node-blue"
@@ -105,8 +90,7 @@ dependencies = [
   "runs<2",
   "tabulate<1",
 ]
-[project.optional-dependencies]
-develop = [
+optional-dependencies.develop = [
   "munch<5",
   "mypy<1.11",
   "poethepoet<0.28",
@@ -114,42 +98,32 @@ develop = [
   "ruff<0.6",
   "types-tabulate",
 ]
-release = [
+optional-dependencies.release = [
   "build<2",
-  'minibump<1; python_version >= "3.10"',
+  "minibump<1; python_version>='3.10'",
   "twine<6",
 ]
-test = [
+optional-dependencies.test = [
   "coverage<8",
   "pytest<9",
   "pytest-asyncio",
   "pytest-mqtt",
   "pytest-repeat",
 ]
-[project.urls]
-changelog = "https://github.com/daq-tools/node-blue/blob/main/CHANGES.md"
-documentation = "https://github.com/daq-tools/node-blue"
-homepage = "https://github.com/daq-tools/node-blue"
-repository = "https://github.com/daq-tools/node-blue"
-[project.scripts]
-node-blue = "node_blue.cli:cli"
+urls.changelog = "https://github.com/daq-tools/node-blue/blob/main/CHANGES.md"
+urls.documentation = "https://github.com/daq-tools/node-blue"
+urls.homepage = "https://github.com/daq-tools/node-blue"
+urls.repository = "https://github.com/daq-tools/node-blue"
+scripts.node-blue = "node_blue.cli:cli"
 
 [tool.setuptools.packages.find]
 namespaces = false
-
-
-# =========================
-# Linter and code formatter
-# =========================
 
 [tool.black]
 line-length = 120
 
 [tool.ruff]
 line-length = 120
-lint.ignore = [
-  "E722"  # Do not use bare `except`
-]
 extend-exclude = [
   # Always.
   ".venv*",
@@ -158,8 +132,33 @@ extend-exclude = [
   "workbench.py",
 ]
 
+lint.ignore = [
+  "E722", # Do not use bare `except`
+]
+
+[tool.pytest.ini_options]
+minversion = "2.0"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --capture=no"
+log_cli = true # Enable to receive way more log details on stdout.
+log_cli_level = "DEBUG"
+log_level = "DEBUG"
+log_format = "%(asctime)-15s [%(name)-24s] %(levelname)-7s: %(message)s"
+testpaths = [ "examples", "droste", "node_blue", "tests" ]
+xfail_strict = true
+markers = [
+  "capmqtt_decode_utf8",
+]
+
+[tool.coverage.run]
+branch = false
+source = [ "droste", "node_blue" ]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
 [tool.mypy]
-packages = ["node_blue"]
+packages = [ "node_blue" ]
 exclude = [
 ]
 check_untyped_defs = true
@@ -168,36 +167,11 @@ implicit_optional = true
 install_types = true
 non_interactive = true
 
+[tool.versioningit]
 
-# ==================
-# Test configuration
-# ==================
-
-[tool.pytest.ini_options]
-minversion = "2.0"
-addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --capture=no"
-log_cli = true  # Enable to receive way more log details on stdout.
-log_cli_level = "DEBUG"
-log_level = "DEBUG"
-log_format = "%(asctime)-15s [%(name)-24s] %(levelname)-7s: %(message)s"
-testpaths = ["examples", "droste", "node_blue", "tests"]
-xfail_strict = true
-markers = [
-  "capmqtt_decode_utf8",
-]
-
-[tool.coverage.run]
-branch = false
-source = ["droste", "node_blue"]
-
-[tool.coverage.report]
-fail_under = 0
-show_missing = true
-
-
-# ===================
-# Tasks configuration
-# ===================
+[tool.versioningit.vcs]
+method = "git"
+default-tag = "0.0.0"
 
 [tool.poe.tasks]
 format = [
