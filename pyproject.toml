@@ -93,7 +93,7 @@ dependencies = [
 optional-dependencies.develop = [
   "munch<5",
   "mypy<1.18",
-  "poethepoet<0.30",
+  "poethepoet<0.38",
   "pyproject-fmt<2.6",
   "ruff<0.13",
   "types-tabulate",
