@@ -95,7 +95,7 @@ optional-dependencies.develop = [
   "mypy<1.20",
   "poethepoet<0.30",
   "pyproject-fmt<2.6",
-  "ruff<0.15",
+  "ruff<0.16",
   "types-tabulate",
 ]
 optional-dependencies.release = [
