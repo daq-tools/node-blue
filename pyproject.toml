@@ -22,7 +22,7 @@ keywords = [
   "node-red",
   "yaml",
 ]
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
 authors = [
   { name = "Andreas Motl", email = "andreas.motl@panodata.org" },
 ]
@@ -39,7 +39,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
   "Intended Audience :: Telecommunications Industry",
-  "License :: OSI Approved :: Apache Software License",
   "Operating System :: MacOS :: MacOS X",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
