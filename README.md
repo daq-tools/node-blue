@@ -7,15 +7,6 @@ Write Node-RED user-defined functions in Python / Efficient test harnesses for N
 True headless Node-RED / Improved development iteration times / Node-RED without needing
 to take the red pill / Node-BLUE is Node-RED on rails / Now it all makes sense_
 
-:::{todo}
-This list should make it into the »Features« section.
-:::
-
-:::{attention}
-Here be dragons.
-:::
-
-
 ## About
 
 The idea is to embed [Node-RED] into Python programs, in order to leverage it
@@ -29,9 +20,7 @@ The other idea is to extend the Node-RED ecosystem by leveraging other programmi
 languages and their ecosystems natively, beyond what JavaScript/NPM can do. We made
 a start with [Python], by using the excellent [JSPyBridge] package.
 
-
 ## Synopsis
-
 
 ### Command-line use
 
@@ -58,7 +47,6 @@ Launch a flow which defines a pipeline to converge data from [MQTT] to [CrateDB]
 node-blue launch --flow=examples/flows/mqtt-to-cratedb.yaml
 ```
 
-
 ### Library use
 
 ```python
@@ -82,7 +70,6 @@ async def launch_blue():
 if __name__ == "__main__":
     asyncio.run(launch_blue())
 ```
-
 
 ## Examples
 
@@ -211,12 +198,10 @@ node-blue launch --flow=examples/flows/mqtt-routing-python.yaml
   ]
 ```
 
-
 ## References
 
 See also the IBM Data management article about [Implementing ETL flows with
 Node-RED] by [Ondrej Lehota].
-
 
 ## Etymology
 
@@ -227,7 +212,6 @@ will not be much harm to reuse that name now.
 
 - https://www.npmjs.com/package/node-blue
 - https://github.com/node-blue/node-blue
-
 
 ## Acknowledgements
 
