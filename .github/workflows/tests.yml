@@ -62,8 +62,8 @@ jobs:
     - name: Set up project
       run: |
         # Install package in editable mode.
-        pip install versioningit wheel
-        pip install --editable=.[test,develop]
+        pip install --upgrade versioningit wheel
+        pip install --upgrade --editable='.[test,develop]'
 
         # TODO: This command should write a `package.json`, then invoke `npm install`.
         node-blue setup
