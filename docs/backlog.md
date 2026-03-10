@@ -1,5 +1,9 @@
 # Node-BLUE backlog 
 
+## Iteration +0
+- [o] Refactor `npm install` to `node-blue setup`
+- [o] Enable code coverage uploading
+
 ## Iteration +1
 - [o] What about calling Python functions?
 - [o] Python functions, appsource, and appsink
