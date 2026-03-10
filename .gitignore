@@ -5,6 +5,7 @@ __pycache__
 *.pyc
 *.egg-info
 /attic
+/dist
 /node_modules
 /var
 .coverage
