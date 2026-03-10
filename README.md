@@ -26,8 +26,14 @@ a start with [Python], by using the excellent [JSPyBridge] package.
 
 Install [Node-BLUE] and [HTTPie], and their prerequisites.
 ```shell
-pip install httpie https://github.com/daq-tools/node-blue
+pip install httpie node-blue
+```
+
+There is currently a little manual post-setup procedure.
+```shell
 node-blue setup
+wget https://github.com/daq-tools/node-blue/raw/refs/heads/main/package.json
+wget https://github.com/daq-tools/node-blue/raw/refs/heads/main/node.importmap
 npm install
 ```
 
