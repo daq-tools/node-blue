@@ -169,8 +169,9 @@ install_types = true
 non_interactive = true
 
 [tool.versioningit]
-vcs.method = "git"
-vcs.default-tag = "0.0.0"
+vcs.method = "git-archive"
+vcs.default-tag = "v0.0.0"
+vcs.describe-subst = "$Format:%(describe:tags,match=v*)$"
 
 [tool.poe]
 tasks.format = [
