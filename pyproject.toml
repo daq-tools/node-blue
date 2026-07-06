@@ -139,33 +139,33 @@ lint.ignore = [
   "E722", # Do not use bare `except`
 ]
 
+[tool.mypy]
+packages = [ "node_blue" ]
+exclude = []
+ignore_missing_imports = true
+check_untyped_defs = true
+implicit_optional = true
+install_types = true
+non_interactive = true
+
 [tool.pytest]
 ini_options.minversion = "2.0"
+ini_options.testpaths = [ "droste", "examples", "node_blue", "tests" ]
 ini_options.addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --capture=no"
-ini_options.log_cli = true  # Enable to receive way more log details on stdout.
-ini_options.log_cli_level = "DEBUG"
-ini_options.log_level = "DEBUG"
-ini_options.log_format = "%(asctime)-15s [%(name)-24s] %(levelname)-7s: %(message)s"
-ini_options.testpaths = [ "examples", "droste", "node_blue", "tests" ]
-ini_options.xfail_strict = true
 ini_options.markers = [
   "capmqtt_decode_utf8",
 ]
+ini_options.xfail_strict = true
+ini_options.log_format = "%(asctime)-15s [%(name)-24s] %(levelname)-7s: %(message)s"
+ini_options.log_level = "DEBUG"
+ini_options.log_cli = true  # Enable to receive way more log details on stdout.
+ini_options.log_cli_level = "DEBUG"
 
 [tool.coverage]
 run.branch = false
 run.source = [ "droste", "node_blue" ]
 report.fail_under = 0
 report.show_missing = true
-
-[tool.mypy]
-packages = [ "node_blue" ]
-exclude = []
-check_untyped_defs = true
-ignore_missing_imports = true
-implicit_optional = true
-install_types = true
-non_interactive = true
 
 [tool.versioningit]
 vcs.method = "git-archive"
