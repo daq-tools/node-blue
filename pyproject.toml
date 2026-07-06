@@ -97,7 +97,7 @@ dependencies = [
 ]
 optional-dependencies.develop = [
   "munch<5",
-  "mypy<1.20",
+  "mypy<2.2",
   "poethepoet<1",
   "pyproject-fmt<3",
   "ruff<0.16",
