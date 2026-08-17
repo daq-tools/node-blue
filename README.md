@@ -59,11 +59,12 @@ node-blue launch --flow=examples/flows/mqtt-to-cratedb.yaml
 import asyncio
 from node_blue.core import NodeBlue
 
+
 async def launch_blue():
     """
     Launch a Node-BLUE instance.
     """
-    
+
     # Configure Node-BLUE instance with Node-RED flow.
     blue = NodeBlue(flow="https://github.com/daq-tools/node-blue/raw/main/examples/flows/http-html-templating.json")
 
@@ -72,6 +73,7 @@ async def launch_blue():
 
     # Wait until termination.
     await blue.forever()
+
 
 if __name__ == "__main__":
     asyncio.run(launch_blue())

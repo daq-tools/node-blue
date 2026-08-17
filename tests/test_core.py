@@ -8,7 +8,7 @@ import pytest
 import requests
 from pytest_mqtt import MqttMessage
 
-from node_blue.core import NodeBlue, FlowManager
+from node_blue.core import FlowManager, NodeBlue
 from node_blue.util import wait
 
 

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from node_blue.core import launch_blue, NodeBlue
+from node_blue.core import NodeBlue, launch_blue
 from node_blue.util import boot_click, docstring_format_verbatim, make_sync
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def help_launch():
     node-blue launch \\
         --flow=https://github.com/daq-tools/node-blue/raw/main/examples/flows/http-html-templating.json
 
-    """  # noqa: E501
+    """
 
 
 def help_setup():
@@ -30,7 +30,7 @@ def help_setup():
     Set up Node-BLUE.
 
     node-blue setup
-    """  # noqa: E501
+    """
 
 
 @click.group()
