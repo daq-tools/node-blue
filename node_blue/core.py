@@ -3,18 +3,17 @@
 import asyncio
 import importlib.resources
 import logging
+import typing as t
 from pathlib import Path
 from types import ModuleType
 
 import funcy
 import javascript
 import javascript.connection
-import typing as t
-
 import tabulate
 
 from node_blue.hal import NodeBlueContext, jsrun
-from node_blue.util import run_later, wait, acquire_text_resource
+from node_blue.util import acquire_text_resource, run_later, wait
 
 logger = logging.getLogger(__name__)
 

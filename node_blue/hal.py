@@ -1,9 +1,9 @@
 # Copyright (c) 2023, The Panodata developers and contributors.
 # Distributed under the terms of the Apache-2.0 license, see LICENSE.
+import asyncio
 import dataclasses
 import threading
 import typing as t
-import asyncio
 from pathlib import Path
 
 import javascript

@@ -3,8 +3,8 @@ Droste's Python backend for invoking Python code snippets.
 """
 
 import logging
-import typing as t
 import textwrap
+import typing as t
 
 from node_blue.util import setup_logging
 

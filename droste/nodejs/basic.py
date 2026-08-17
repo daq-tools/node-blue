@@ -2,7 +2,6 @@ import logging
 
 from munch import munchify, unmunchify
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -18,7 +17,7 @@ def mkpyfun(code: str):
         # logger.info("EVALUATE!")
         # locals().update(munchify(kwargs))
         ns = munchify(kwargs)
-        exec(code, {}, ns)
+        exec(code, {}, ns)  # noqa: S102
         # return locals()
         return unmunchify(ns)
 
