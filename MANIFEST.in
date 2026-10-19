@@ -2,3 +2,5 @@ include CHANGES.md LICENSE README.md
 recursive-include droste *.js *.mjs LICENSE README.md
 recursive-include node_blue *.js *.mjs
 recursive-include docs *.md
+prune droste/examples
+prune droste/tests

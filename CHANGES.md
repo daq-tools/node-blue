@@ -2,6 +2,8 @@
 
 ## In progress
 
+- Fixed packaging
+
 ## 2026/10/19 v0.0.1
 
 - Validated on Python 3.15

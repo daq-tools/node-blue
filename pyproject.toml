@@ -122,6 +122,7 @@ urls.repository = "https://github.com/daq-tools/node-blue"
 scripts.node-blue = "node_blue.cli:cli"
 
 [tool.setuptools]
+packages.find.include = [ "droste*", "node_blue*" ]
 packages.find.namespaces = false
 
 [tool.black]
