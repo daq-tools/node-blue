@@ -31,9 +31,11 @@ pip install httpie node-blue
 
 There is currently a little manual post-setup procedure.
 ```shell
+pip install httpie git+https://github.com/daq-tools/node-blue
 node-blue setup
-wget https://github.com/daq-tools/node-blue/raw/refs/heads/main/package.json
-wget https://github.com/daq-tools/node-blue/raw/refs/heads/main/node.importmap
+
+# Temporarily needed.
+wget https://github.com/daq-tools/node-blue/raw/main/package.json
 npm install
 ```
 

@@ -1,5 +1,12 @@
 # Node-BLUE miscellaneous notes
 
+
+Please head over to our community site, or create an issue.
+
+- https://community.panodata.org/
+- https://github.com/daq-tools/node-blue/issues
+
+
 ## Inquire available Node-RED pipeline elements
 ```shell
 cat var/.config.nodes.json

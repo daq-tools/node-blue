@@ -5,6 +5,9 @@
 - [o] Enable code coverage uploading
 
 ## Iteration +1
+- [o] Make CrateDB example work on CI
+- [o] Add Docker Compose configuration to CrateDB example
+- [o] Another CrateDB example: https://invidious.fdn.fr/watch?v=eqXnJHgjjOs
 - [o] What about calling Python functions?
 - [o] Python functions, appsource, and appsink
 - [o] Hot configuration and code reloading
