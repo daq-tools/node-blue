@@ -2,6 +2,8 @@
 
 ## In progress
 
+- Validated on Python 3.15
+
 ## 2026/03/10 v0.0.0
 
 - Proof-of-concept and documentation, with software tests
