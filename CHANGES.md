@@ -2,6 +2,8 @@
 
 ## In progress
 
+## 2026/10/19 v0.0.2
+
 - Fixed packaging
 
 ## 2026/10/19 v0.0.1
